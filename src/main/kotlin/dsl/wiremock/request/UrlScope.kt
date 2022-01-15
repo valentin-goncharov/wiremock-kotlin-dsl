@@ -6,7 +6,7 @@ import dsl.wiremock.WireMockDSL
 
 class UrlScope {
 
-    lateinit var pattern: UrlPattern
+    var pattern: UrlPattern = UrlPattern.ANY
         private set
 
     @WireMockDSL
