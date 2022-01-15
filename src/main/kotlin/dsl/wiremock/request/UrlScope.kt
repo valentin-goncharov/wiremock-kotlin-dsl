@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import dsl.wiremock.WireMockDSL
 
+@WireMockDSL
 class UrlScope {
 
     var pattern: UrlPattern = UrlPattern.ANY
