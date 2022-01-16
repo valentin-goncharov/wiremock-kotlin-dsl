@@ -29,6 +29,12 @@ class StubForTest {
 
             queryParameters contain "startDate" after "2022-01-16 11:45:00"
             queryParameters doNotContain "endDate"
+
+            body json """
+               {
+                "key": "value" 
+               } 
+            """
          }
     }
 }
