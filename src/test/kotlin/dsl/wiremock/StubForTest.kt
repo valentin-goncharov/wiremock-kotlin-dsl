@@ -10,6 +10,10 @@ class StubForTest {
     @Disabled
     fun testStub() {
         get {
+            id = "8d463e72-790a-40d7-8ffa-ffca31d1bdf6"
+            name = "test stub"
+            priority = 1
+
             url equalTo "http://localhost:8080/test/path"
             url matches  "http://localhost:8080/test/.*"
             url pathEqualTo  "/test/path"
