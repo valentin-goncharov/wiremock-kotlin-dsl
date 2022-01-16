@@ -1,6 +1,8 @@
 package dsl.wiremock.request
 
-class CookiesScope {
-    //TODO not implemented
+import dsl.wiremock.WireMockDSL
 
-}
+@WireMockDSL
+class CookiesScope: NamedPatternScope()
+
+typealias Cookie = NamedPattern

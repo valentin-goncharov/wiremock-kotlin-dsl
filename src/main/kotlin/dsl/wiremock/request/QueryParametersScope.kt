@@ -1,5 +1,9 @@
 package dsl.wiremock.request
 
-class QueryParametersScope {
-    //TODO not implemented
-}
+import dsl.wiremock.WireMockDSL
+
+
+@WireMockDSL
+class QueryParametersScope: NamedPatternScope()
+
+typealias Parameter = NamedPattern

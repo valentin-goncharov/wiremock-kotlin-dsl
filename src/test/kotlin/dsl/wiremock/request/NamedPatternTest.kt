@@ -4,17 +4,17 @@ import com.github.tomakehurst.wiremock.matching.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class HeaderTest {
+internal class NamedPatternTest {
     @Test
     fun `constructor creates AnythingPattern by default`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
         assertThat(pattern.name).isEqualTo("name")
         assertThat(pattern.pattern).isInstanceOf(AnythingPattern::class.java)
     }
 
     @Test
     fun `equalTo should set pattern to EqualToPattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern equalTo "value"
 
@@ -24,7 +24,7 @@ internal class HeaderTest {
 
     @Test
     fun `matches should set pattern to RegexPattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern matches  ".*value.*"
 
@@ -34,7 +34,7 @@ internal class HeaderTest {
 
     @Test
     fun `doesNotMatch should set pattern to NegativeRegexPattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern doesNotMatch ".*value.*"
 
@@ -44,7 +44,7 @@ internal class HeaderTest {
 
     @Test
     fun `contains should set pattern to ContainsPattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern contains "value"
 
@@ -54,7 +54,7 @@ internal class HeaderTest {
 
     @Test
     fun `before should set pattern to BeforeDateTimePattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern before "2022-01-01 00:00:00"
 
@@ -64,7 +64,7 @@ internal class HeaderTest {
 
     @Test
     fun `after should set pattern to AfterDateTimePattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern after "2022-01-01 00:00:00"
 
@@ -74,7 +74,7 @@ internal class HeaderTest {
 
     @Test
     fun `dateTime should set pattern to EqualToDateTimePattern`() {
-        val pattern = Header("name")
+        val pattern = NamedPattern("name")
 
         pattern dateTime  "2022-01-01 00:00:00"
 

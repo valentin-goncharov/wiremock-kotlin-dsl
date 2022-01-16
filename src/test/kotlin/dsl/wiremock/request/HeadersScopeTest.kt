@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import java.util.function.Consumer
 
 internal class HeadersScopeTest {
-    lateinit var headers: HeadersScope
+    private lateinit var headers: HeadersScope
 
     @BeforeEach
     fun init() {
@@ -17,7 +17,7 @@ internal class HeadersScopeTest {
     }
 
     @Test
-    fun `contain should create new headers and put them into patterns`() {
+    fun `contain should create new header and put them into patterns`() {
 
         val header = headers contain "Accept"
         header equalTo "text/plain"

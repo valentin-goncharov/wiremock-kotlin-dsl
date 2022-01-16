@@ -1,9 +1,13 @@
 package dsl.wiremock
 
 import dsl.wiremock.stubs.get
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 class StubForTest {
 
+    @Test
+    @Disabled
     fun testStub() {
         get {
             url equalTo "http://localhost:8080/test/path"
@@ -19,6 +23,12 @@ class StubForTest {
             headers contain "X-Test-Date-After" after "2022-01-15 21:45:00"
             headers contain "X-Test-Date-Before" before "2022-01-15 21:45:00"
             headers doNotContain "X-Not"
-        }
+
+            cookies contain "Session"
+            cookies doNotContain "Version"
+
+            queryParameters contain "startDate" after "2022-01-16 11:45:00"
+            queryParameters doNotContain "endDate"
+         }
     }
 }
