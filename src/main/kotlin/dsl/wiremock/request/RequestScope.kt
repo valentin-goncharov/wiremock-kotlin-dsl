@@ -1,11 +1,10 @@
-package dsl.wiremock.mapping
+package dsl.wiremock.request
 
 import dsl.wiremock.WireMockDSL
-import dsl.wiremock.request.*
 import java.util.*
 
 @WireMockDSL
-open class MappingScope {
+open class RequestScope {
 
     var id: String? = null
         set(value) {

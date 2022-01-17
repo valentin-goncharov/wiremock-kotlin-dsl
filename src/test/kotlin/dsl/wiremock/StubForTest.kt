@@ -39,6 +39,15 @@ class StubForTest {
                 "key": "value" 
                } 
             """
+         } returns {
+            status = 200
+            headers contain "ETag" equalTo "56d-9989200-1132c580"
+
+            body json """
+                    {
+                        "key": "value"
+                    }
+                """
          }
     }
 }

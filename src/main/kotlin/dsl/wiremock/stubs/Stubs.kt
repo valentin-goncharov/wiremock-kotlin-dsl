@@ -5,100 +5,68 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import dsl.wiremock.WireMockDSL
-import dsl.wiremock.mapping.MappingScope
+import dsl.wiremock.request.RequestScope
 
 @WireMockDSL
-fun get(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::get, init)
-}
+fun get(init: RequestScope.() -> Unit) = createRequestScope(WireMock::get, init)
 
 @WireMockDSL
-fun WireMockServer.get(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::get, init)
-}
+fun WireMockServer.get(init: RequestScope.() -> Unit) = createRequestScope(WireMock::get, init, this)
 
 @WireMockDSL
-fun post(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::post, init)
-}
+fun post(init: RequestScope.() -> Unit) = createRequestScope(WireMock::post, init)
 
 @WireMockDSL
-fun WireMockServer.post(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::post, init)
-}
+fun WireMockServer.post(init: RequestScope.() -> Unit) = createRequestScope(WireMock::post, init, this)
 
 @WireMockDSL
-fun put(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::put, init)
-}
+fun put(init: RequestScope.() -> Unit) = createRequestScope(WireMock::put, init)
 
 @WireMockDSL
-fun WireMockServer.put(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::put, init)
-}
+fun WireMockServer.put(init: RequestScope.() -> Unit) = createRequestScope(WireMock::put, init, this)
 
 @WireMockDSL
-fun patch(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::patch, init)
-}
+fun patch(init: RequestScope.() -> Unit) = createRequestScope(WireMock::patch, init)
 
 @WireMockDSL
-fun WireMockServer.patch(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::patch, init)
-}
+fun WireMockServer.patch(init: RequestScope.() -> Unit) = createRequestScope(WireMock::patch, init, this)
 
 @WireMockDSL
-fun delete(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::delete, init)
-}
+fun delete(init: RequestScope.() -> Unit) = createRequestScope(WireMock::delete, init)
 
 @WireMockDSL
-fun WireMockServer.delete(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::delete, init)
-}
+fun WireMockServer.delete(init: RequestScope.() -> Unit) = createRequestScope(WireMock::delete, init, this)
 
 @WireMockDSL
-fun head(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::head, init)
-}
+fun head(init: RequestScope.() -> Unit) = createRequestScope(WireMock::head, init)
 
 @WireMockDSL
-fun WireMockServer.head(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::head, init)
-}
+fun WireMockServer.head(init: RequestScope.() -> Unit) = createRequestScope(WireMock::head, init, this)
 
 @WireMockDSL
-fun trace(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::trace, init)
-}
+fun trace(init: RequestScope.() -> Unit) = createRequestScope(WireMock::trace, init)
 
 @WireMockDSL
-fun WireMockServer.trace(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::trace, init)
-}
+fun WireMockServer.trace(init: RequestScope.() -> Unit) = createRequestScope(WireMock::trace, init, this)
 
 @WireMockDSL
-fun options(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::options, init)
-}
+fun options(init: RequestScope.() -> Unit) = createRequestScope(WireMock::options, init)
 
 @WireMockDSL
-fun WireMockServer.options(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::options, init)
-}
+fun WireMockServer.options(init: RequestScope.() -> Unit) = createRequestScope(WireMock::options, init, this)
 
 @WireMockDSL
-fun any(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::any, init)
-}
+fun any(init: RequestScope.() -> Unit) = createRequestScope(WireMock::any, init)
 
 @WireMockDSL
-fun WireMockServer.any(init: MappingScope.() -> Unit) {
-    stubFor(WireMock::any, init)
-}
+fun WireMockServer.any(init: RequestScope.() -> Unit) = createRequestScope(WireMock::any, init, this)
 
-private fun stubFor(method: (UrlPattern) -> MappingBuilder, init: MappingScope.() -> Unit) {
-    val scope = PlainStubScope()
+private fun createRequestScope(
+    method: (UrlPattern) -> MappingBuilder,
+    init: RequestScope.() -> Unit,
+    server: WireMockServer? = null
+): StubScope<RequestScope> {
+    val scope = PlainStubScope(server)
     scope.addMapping(method, init)
-    WireMock.stubFor(scope.getBuilder())
+    return scope
 }
