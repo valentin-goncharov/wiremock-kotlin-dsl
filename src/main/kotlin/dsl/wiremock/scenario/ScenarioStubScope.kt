@@ -1,49 +1,63 @@
-package dsl.wiremock.stubs
+package dsl.wiremock.scenario
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.ScenarioMappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import dsl.wiremock.request.RequestScope
 import dsl.wiremock.mapping.withCookies
 import dsl.wiremock.mapping.withHeaders
 import dsl.wiremock.mapping.withQueryParams
 import dsl.wiremock.mapping.withRequestBodyPatterns
 import dsl.wiremock.response.FaultResponseScope
 import dsl.wiremock.response.ResponseScope
+import dsl.wiremock.stubs.StubScope
+import dsl.wiremock.stubs.scenario.ScenarioRequestScope
+import dsl.wiremock.stubs.scenario.ScenarioScope
 
-class PlainStubScope(private val server: WireMockServer? = null): StubScope<RequestScope> {
+class ScenarioStubScope(
+    private val scenario: ScenarioScope,
+    private val server: WireMockServer? = null
+): StubScope<ScenarioRequestScope> {
 
-    private lateinit var builder: MappingBuilder
+    private lateinit var builder: ScenarioMappingBuilder
 
     private lateinit var stub: StubMapping
 
-    private fun initMapping(init: RequestScope.() -> Unit): RequestScope {
-        val mapping = RequestScope()
+    private fun initMapping(init: ScenarioRequestScope.() -> Unit): ScenarioRequestScope {
+        val mapping = ScenarioRequestScope()
         mapping.init()
         return mapping
     }
 
-    override fun addMapping(method: (UrlPattern) -> MappingBuilder, init: RequestScope.() -> Unit) {
+    override fun addMapping(method: (UrlPattern) -> MappingBuilder, init: ScenarioRequestScope.() -> Unit) {
         val mapping = initMapping(init)
 
-        val mappingBuilder = method(mapping.url.pattern)
+        val scenarioMappingBuilder = method(mapping.url.pattern) as ScenarioMappingBuilder
+        scenarioMappingBuilder.inScenario(scenario.name)
+
+        mapping.require?.let {
+            scenarioMappingBuilder.whenScenarioStateIs(it)
+        }
+
+        mapping.state?.let {
+            scenarioMappingBuilder.willSetStateTo(it)
+        }
 
         mapping.priority?.let {
-            mappingBuilder.atPriority(it)
+            scenarioMappingBuilder.atPriority(it)
         }
 
         mapping.name?.let {
-            mappingBuilder.withName(it)
+            scenarioMappingBuilder.withName(it)
         }
 
-        builder = mappingBuilder
+        builder = scenarioMappingBuilder
             .withHeaders(mapping.headers.patterns)
             .withCookies(mapping.cookies.patterns)
             .withQueryParams(mapping.queryParameters.patterns)
             .withRequestBodyPatterns(mapping.body.patterns)
-            .willReturn(ResponseScope().builder)
 
         buildStub()
     }
