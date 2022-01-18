@@ -1,10 +1,12 @@
 package dsl.wiremock
 
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import dsl.wiremock.response.FaultType.CONNECTION_RESET_BY_PEER
 import dsl.wiremock.stubs.get
 import dsl.wiremock.stubs.scenario
 import org.junit.jupiter.api.Test
 
+@WireMockTest
 class StubForTest {
 
     @Test
