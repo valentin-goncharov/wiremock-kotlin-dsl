@@ -1,6 +1,8 @@
 package dsl.wiremock.request
 
 import dsl.wiremock.WireMockDSL
+import dsl.wiremock.metadata.MetadataEntry
+import dsl.wiremock.metadata.MetadataScope
 import java.util.*
 
 @WireMockDSL
@@ -28,4 +30,11 @@ open class RequestScope {
     val cookies = CookiesScope()
     val queryParameters = QueryParametersScope()
     val body = RequestBodyScope()
+
+    private val metadata = MetadataScope()
+
+    @WireMockDSL
+    fun metadata(fn: MetadataEntry.() -> Unit) {
+        metadata.apply(fn)
+    }
 }

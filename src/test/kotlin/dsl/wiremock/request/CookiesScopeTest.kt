@@ -2,7 +2,7 @@ package dsl.wiremock.request
 
 import com.github.tomakehurst.wiremock.matching.AbsentPattern
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.function.Consumer
@@ -20,15 +20,15 @@ internal class CookiesScopeTest {
 
         val cookie = cookies contain "Session"
 
-        Assertions.assertThat(cookie)
+        assertThat(cookie)
             .isInstanceOf(Cookie::class.java)
             .hasFieldOrPropertyWithValue("name", "Session")
 
-        Assertions.assertThat(cookies.patterns).hasSize(1)
+        assertThat(cookies.patterns).hasSize(1)
 
-        Assertions.assertThat(cookies.patterns[0]).satisfies(Consumer {
-            Assertions.assertThat(it.name).isEqualTo("Session")
-            Assertions.assertThat(it.pattern).isInstanceOf(AnythingPattern::class.java)
+        assertThat(cookies.patterns[0]).satisfies(Consumer {
+            assertThat(it.name).isEqualTo("Session")
+            assertThat(it.pattern).isInstanceOf(AnythingPattern::class.java)
         })
     }
 
@@ -37,10 +37,10 @@ internal class CookiesScopeTest {
 
         cookies doNotContain "Version"
 
-        Assertions.assertThat(cookies.patterns).hasSize(1)
-        Assertions.assertThat(cookies.patterns[0]).satisfies(Consumer {
-            Assertions.assertThat(it.name).isEqualTo("Version")
-            Assertions.assertThat(it.pattern).isInstanceOf(AbsentPattern::class.java)
+        assertThat(cookies.patterns).hasSize(1)
+        assertThat(cookies.patterns[0]).satisfies(Consumer {
+            assertThat(it.name).isEqualTo("Version")
+            assertThat(it.pattern).isInstanceOf(AbsentPattern::class.java)
         })
     }
 }

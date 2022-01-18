@@ -5,6 +5,7 @@ import dsl.wiremock.response.FaultType.CONNECTION_RESET_BY_PEER
 import dsl.wiremock.stubs.get
 import dsl.wiremock.stubs.scenario
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 @WireMockTest
 class StubForTest {
@@ -41,6 +42,13 @@ class StubForTest {
                 "key": "value" 
                } 
             """
+
+            metadata {
+                "attribute" attr "value"
+                "nested" metadata {
+                    "list" list listOf(1, LocalDate.now(), "some string")
+                }
+            }
         } returns {
             status = 200
             headers contain "ETag" equalTo "56d-9989200-1132c580"

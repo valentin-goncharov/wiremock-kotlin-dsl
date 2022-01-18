@@ -1,7 +1,7 @@
 package dsl.wiremock.request
 
 import com.github.tomakehurst.wiremock.matching.*
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.function.Consumer
@@ -26,11 +26,11 @@ internal class RequestBodyScopeTest {
 
         body json json
 
-        Assertions.assertThat(body.patterns).hasSize(1)
-        Assertions.assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].pattern)
             .satisfies( Consumer {
                 val jsonPattern = it as EqualToJsonPattern
-                Assertions.assertThat(jsonPattern.equalToJson).isEqualTo(json.trimIndent())
+                assertThat(jsonPattern.equalToJson).isEqualTo(json.trimIndent())
             })
     }
 
@@ -40,11 +40,11 @@ internal class RequestBodyScopeTest {
 
         body string string
 
-        Assertions.assertThat(body.patterns).hasSize(1)
-        Assertions.assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].pattern)
             .isInstanceOf(EqualToPattern::class.java)
             .satisfies( Consumer {
-                Assertions.assertThat(it.expected).isEqualTo(string)
+                assertThat(it.expected).isEqualTo(string)
             })
     }
 
@@ -58,12 +58,12 @@ internal class RequestBodyScopeTest {
 
         body xml xml
 
-        Assertions.assertThat(body.patterns).hasSize(1)
-        Assertions.assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].pattern)
             .isInstanceOf(EqualToXmlPattern::class.java)
             .satisfies( Consumer {
                 val xmlPattern = it as EqualToXmlPattern
-                Assertions.assertThat(xmlPattern.equalToXml).isEqualTo(xml.trimIndent())
+                assertThat(xmlPattern.equalToXml).isEqualTo(xml.trimIndent())
             })
     }
 
@@ -73,11 +73,11 @@ internal class RequestBodyScopeTest {
 
         body matches regexp
 
-        Assertions.assertThat(body.patterns).hasSize(1)
-        Assertions.assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].pattern)
             .isInstanceOf(RegexPattern::class.java)
             .satisfies( Consumer {
-                Assertions.assertThat(it.expected).isEqualTo(regexp)
+                assertThat(it.expected).isEqualTo(regexp)
             })
     }
 
@@ -87,11 +87,11 @@ internal class RequestBodyScopeTest {
 
         body doesNotMatch regexp
 
-        Assertions.assertThat(body.patterns).hasSize(1)
-        Assertions.assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].pattern)
             .isInstanceOf(NegativeRegexPattern::class.java)
             .satisfies( Consumer {
-                Assertions.assertThat(it.expected).isEqualTo(regexp)
+                assertThat(it.expected).isEqualTo(regexp)
             })
     }
 }

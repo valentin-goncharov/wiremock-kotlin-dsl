@@ -1,6 +1,6 @@
 package dsl.wiremock.response
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class ResponseScopeTest {
@@ -11,6 +11,6 @@ internal class ResponseScopeTest {
         responseScope.status = 404
 
         val response = responseScope.builder.build()
-        Assertions.assertThat(response.status).isEqualTo(404)
+        assertThat(response.status).isEqualTo(404)
     }
 }

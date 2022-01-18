@@ -2,7 +2,7 @@ package dsl.wiremock.request
 
 import com.github.tomakehurst.wiremock.matching.AbsentPattern
 import com.github.tomakehurst.wiremock.matching.NegativeRegexPattern
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.function.Consumer
@@ -20,15 +20,15 @@ internal class QueryParametersScopeTest {
 
         val parameter = queryParameters contain "scope" doesNotMatch "dev"
 
-        Assertions.assertThat(parameter)
+        assertThat(parameter)
             .isInstanceOf(Parameter::class.java)
             .hasFieldOrPropertyWithValue("name", "scope")
 
-        Assertions.assertThat(queryParameters.patterns).hasSize(1)
+        assertThat(queryParameters.patterns).hasSize(1)
 
-        Assertions.assertThat(queryParameters.patterns[0]).satisfies(Consumer {
-            Assertions.assertThat(it.name).isEqualTo("scope")
-            Assertions.assertThat(it.pattern).isInstanceOf(NegativeRegexPattern::class.java)
+        assertThat(queryParameters.patterns[0]).satisfies(Consumer {
+            assertThat(it.name).isEqualTo("scope")
+            assertThat(it.pattern).isInstanceOf(NegativeRegexPattern::class.java)
         })
     }
 
@@ -37,10 +37,10 @@ internal class QueryParametersScopeTest {
 
         queryParameters doNotContain "scope"
 
-        Assertions.assertThat(queryParameters.patterns).hasSize(1)
-        Assertions.assertThat(queryParameters.patterns[0]).satisfies(Consumer {
-            Assertions.assertThat(it.name).isEqualTo("scope")
-            Assertions.assertThat(it.pattern).isInstanceOf(AbsentPattern::class.java)
+        assertThat(queryParameters.patterns).hasSize(1)
+        assertThat(queryParameters.patterns[0]).satisfies(Consumer {
+            assertThat(it.name).isEqualTo("scope")
+            assertThat(it.pattern).isInstanceOf(AbsentPattern::class.java)
         })
     }
 }

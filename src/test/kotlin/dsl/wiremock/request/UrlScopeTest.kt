@@ -1,7 +1,7 @@
 package dsl.wiremock.request
 
 import com.github.tomakehurst.wiremock.matching.*
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -19,8 +19,8 @@ internal class UrlScopeTest {
         val testUrl = "/test/url"
         url equalTo testUrl
 
-        Assertions.assertThat(url.pattern).isInstanceOf(UrlPattern::class.java)
-        Assertions.assertThat(url.pattern.pattern)
+        assertThat(url.pattern).isInstanceOf(UrlPattern::class.java)
+        assertThat(url.pattern.pattern)
             .isInstanceOf(EqualToPattern::class.java)
             .hasFieldOrPropertyWithValue("expectedValue", testUrl)
     }
@@ -31,8 +31,8 @@ internal class UrlScopeTest {
 
         url matches regexp
 
-        Assertions.assertThat(url.pattern).isInstanceOf(UrlPattern::class.java)
-        Assertions.assertThat(url.pattern.pattern)
+        assertThat(url.pattern).isInstanceOf(UrlPattern::class.java)
+        assertThat(url.pattern.pattern)
             .isInstanceOf(RegexPattern::class.java)
             .hasFieldOrPropertyWithValue("expectedValue", regexp)
     }
@@ -43,8 +43,8 @@ internal class UrlScopeTest {
 
         url pathEqualTo pathUrl
 
-        Assertions.assertThat(url.pattern).isInstanceOf(UrlPathPattern::class.java)
-        Assertions.assertThat(url.pattern.pattern)
+        assertThat(url.pattern).isInstanceOf(UrlPathPattern::class.java)
+        assertThat(url.pattern.pattern)
             .isInstanceOf(EqualToPattern::class.java)
             .hasFieldOrPropertyWithValue("expectedValue", pathUrl)
     }
@@ -55,8 +55,8 @@ internal class UrlScopeTest {
 
         url pathMatches regexp
 
-        Assertions.assertThat(url.pattern).isInstanceOf(UrlPathPattern::class.java)
-        Assertions.assertThat(url.pattern.pattern)
+        assertThat(url.pattern).isInstanceOf(UrlPathPattern::class.java)
+        assertThat(url.pattern.pattern)
             .isInstanceOf(RegexPattern::class.java)
             .hasFieldOrPropertyWithValue("expectedValue", regexp)
     }
