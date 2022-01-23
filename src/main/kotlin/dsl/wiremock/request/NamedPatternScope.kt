@@ -8,13 +8,15 @@ import java.lang.Exception
 
 private val ANY = AnythingPattern()
 
+private const val ERROR_MESSAGE = "Names should be equal"
+
 @WireMockDSL
 sealed class NamedPatternScope {
     val patterns = mutableListOf<NamedPattern>()
 
     @WireMockDSL
     infix fun contain(key: String): NamedPattern {
-        val pattern = NamedPattern(key)
+        val pattern = NamedPattern(this, key)
         patterns.add(pattern)
         return pattern
     }
@@ -22,65 +24,136 @@ sealed class NamedPatternScope {
     @WireMockDSL
     infix fun doNotContain(key: String) : NamedPattern {
         patterns.removeAll { it.name == key }
-        val pattern = NamedPattern(key, AbsentPattern.ABSENT)
+        val pattern = NamedPattern(this, key, AbsentPattern.ABSENT )
         patterns.add(pattern)
         return pattern
+    }
+
+    fun replace(oldPattern: NamedPattern, newPattern: NamedPattern) {
+        patterns.remove(oldPattern)
+        patterns.add(newPattern)
     }
 }
 
 @WireMockDSL
-open class NamedPattern(val name: String, pattern: StringValuePattern = ANY) {
+open class NamedPattern(
+    private val scope: NamedPatternScope = defaultScope,
+    val name: String,
+    pattern: StringValuePattern = ANY) {
+
+    private var patternFn: ((Array<StringValuePattern>) -> StringValuePattern)? = null
 
     var pattern: StringValuePattern = pattern
         protected set
 
     @WireMockDSL
     infix fun equalTo(value: String): NamedPattern {
-        this.pattern = WireMock.equalTo(value)
+        val pattern = WireMock.equalTo(value)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
         return this
     }
 
     @WireMockDSL
     infix fun matches(regex: String): NamedPattern {
-        this.pattern = WireMock.matching(regex)
+        val pattern = WireMock.matching(regex)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
         return this
     }
 
     @WireMockDSL
     infix fun doesNotMatch(regex: String): NamedPattern {
-        this.pattern = WireMock.notMatching(regex)
+        val pattern = WireMock.notMatching(regex)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
         return this
     }
 
     @WireMockDSL
     infix fun contains(value: String): NamedPattern {
-        this.pattern = WireMock.containing(value)
+        val pattern = WireMock.containing(value)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
         return this
     }
 
     @WireMockDSL
     infix fun before(value: String): DateTimeNamedPattern {
-        val dateTimePattern = DateTimeNamedPattern(name, WireMock.before(value))
-        this.pattern = dateTimePattern.pattern
+        val pattern = WireMock.before(value)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
+        val dateTimePattern = DateTimeNamedPattern(scope, name, this.pattern)
+        scope.replace(this, dateTimePattern)
         return dateTimePattern
     }
 
     @WireMockDSL
     infix fun after(value: String): DateTimeNamedPattern {
-        val dateTimePattern = DateTimeNamedPattern(name, WireMock.after(value))
-        this.pattern = dateTimePattern.pattern
+        val pattern = WireMock.after(value)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
+        val dateTimePattern = DateTimeNamedPattern(scope, name, this.pattern)
+        scope.replace(this, dateTimePattern)
         return dateTimePattern
     }
 
     @WireMockDSL
     infix fun dateTime(value: String): DateTimeNamedPattern {
-        val dateTimePattern = DateTimeNamedPattern(name, WireMock.equalToDateTime(value))
-        this.pattern = dateTimePattern.pattern
+        val pattern = WireMock.equalToDateTime(value)
+        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        patternFn = null
+        val dateTimePattern = DateTimeNamedPattern(scope, name, this.pattern)
+        scope.replace(this, dateTimePattern)
         return dateTimePattern
     }
+
+    @WireMockDSL
+    infix fun or(name: String): NamedPattern {
+        if (this.name != name) {
+            throw IllegalArgumentException(ERROR_MESSAGE)
+        }
+        patternFn = WireMock::or
+        return this
+    }
+
+    @WireMockDSL
+    infix fun or(namedPattern: NamedPattern): NamedPattern {
+        if (this.name != namedPattern.name) {
+            throw IllegalArgumentException(ERROR_MESSAGE)
+        }
+        this.pattern = WireMock.or(this.pattern, namedPattern.pattern)
+        patternFn = null
+        return this
+    }
+
+    @WireMockDSL
+    infix fun and(name: String): NamedPattern {
+        if (this.name != name) {
+            throw IllegalArgumentException(ERROR_MESSAGE)
+        }
+        patternFn = WireMock::and
+        return this
+    }
+
+    @WireMockDSL
+    infix fun and(namedPattern: NamedPattern): NamedPattern {
+        if (this.name != namedPattern.name) {
+            throw IllegalArgumentException(ERROR_MESSAGE)
+        }
+        this.pattern = WireMock.and(this.pattern, namedPattern.pattern)
+        patternFn = null
+        return this
+    }
+
+
 }
 
-class DateTimeNamedPattern(name:String, pattern: StringValuePattern): NamedPattern(name, pattern) {
+class DateTimeNamedPattern(
+    scope: NamedPatternScope,
+    name:String,
+    pattern: StringValuePattern
+): NamedPattern(scope, name, pattern) {
 
     @WireMockDSL
     infix fun actualFormat(value: String): DateTimeNamedPattern {
@@ -113,3 +186,55 @@ class DateTimeNamedPattern(name:String, pattern: StringValuePattern): NamedPatte
         }
     }
 }
+
+object DefaultScope: NamedPatternScope()
+val defaultScope = DefaultScope
+
+@WireMockDSL
+infix fun String.equalTo(value: String): NamedPattern = NamedPattern(
+    defaultScope,
+    this,
+    WireMock.equalTo(value)
+)
+
+@WireMockDSL
+infix fun String.matches(regex: String): NamedPattern = NamedPattern(
+    defaultScope,
+    this,
+    WireMock.matching(regex)
+)
+
+@WireMockDSL
+infix fun String.doesNotMatch(regex: String): NamedPattern = NamedPattern(
+    defaultScope,
+    this,
+    WireMock.notMatching(regex)
+)
+
+@WireMockDSL
+infix fun String.contains(value: String): NamedPattern = NamedPattern(
+    defaultScope,
+    this,
+    WireMock.containing(value)
+)
+
+@WireMockDSL
+infix fun String.before(value: String): DateTimeNamedPattern = DateTimeNamedPattern(
+    defaultScope,
+    this,
+    WireMock.before(value)
+)
+
+@WireMockDSL
+infix fun String.after(value: String): DateTimeNamedPattern = DateTimeNamedPattern(
+    defaultScope,
+    this,
+    WireMock.after(value)
+)
+
+@WireMockDSL
+infix fun String.dateTime(value: String): DateTimeNamedPattern  = DateTimeNamedPattern(
+    defaultScope,
+    this,
+    WireMock.equalToDateTime(value)
+)

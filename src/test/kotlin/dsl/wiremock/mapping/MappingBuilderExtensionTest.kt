@@ -29,8 +29,11 @@ internal class MappingBuilderExtensionTest {
     @Test
     fun `withHeaders should add headers patterns to the mapping builder`() {
 
-        val headerOne = Header("Accept", WireMock.equalTo("plain/text"))
-        val headerTwo = Header("Authorization", WireMock.equalTo("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="))
+        val headerOne = Header(name = "Accept", pattern = WireMock.equalTo("plain/text"))
+        val headerTwo = Header(
+            name = "Authorization",
+            pattern = WireMock.equalTo("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==")
+        )
 
         builder.withHeaders(listOf(headerOne, headerTwo))
 
@@ -50,8 +53,8 @@ internal class MappingBuilderExtensionTest {
     @Test
     fun `withCookies should add cookies patterns to the mapping builder`() {
 
-        val cookieOne = Cookie("Session", WireMock.equalTo("SkjdhasdHH"))
-        val cookieTwo = Cookie("Version", WireMock.equalTo("1.0"))
+        val cookieOne = Cookie(name = "Session", pattern = WireMock.equalTo("SkjdhasdHH"))
+        val cookieTwo = Cookie(name = "Version", pattern = WireMock.equalTo("1.0"))
 
         builder.withCookies(listOf(cookieOne, cookieTwo))
 
@@ -71,8 +74,11 @@ internal class MappingBuilderExtensionTest {
     @Test
     fun `withQueryParams should add query parameters patterns to the mapping builder`() {
 
-        val paramOne = Parameter("stage", WireMock.equalTo("dev"))
-        val paramTwo = Parameter("startDate", WireMock.equalToDateTime("2022-01-16 22:12:00"))
+        val paramOne = Parameter(name = "stage", pattern = WireMock.equalTo("dev"))
+        val paramTwo = Parameter(
+            name = "startDate",
+            pattern = WireMock.equalToDateTime("2022-01-16 22:12:00")
+        )
 
         builder.withQueryParams(listOf(paramOne, paramTwo))
 
