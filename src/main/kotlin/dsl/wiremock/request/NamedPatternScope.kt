@@ -37,11 +37,12 @@ sealed class NamedPatternScope {
 
 @WireMockDSL
 open class NamedPattern(
+    
     private val scope: NamedPatternScope = defaultScope,
     val name: String,
     pattern: StringValuePattern = ANY) {
 
-    private var patternFn: ((Array<StringValuePattern>) -> StringValuePattern)? = null
+    private var junctionPattern: ((Array<StringValuePattern>) -> StringValuePattern)? = null
 
     var pattern: StringValuePattern = pattern
         protected set
@@ -49,40 +50,40 @@ open class NamedPattern(
     @WireMockDSL
     infix fun equalTo(value: String): NamedPattern {
         val pattern = WireMock.equalTo(value)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         return this
     }
 
     @WireMockDSL
     infix fun matches(regex: String): NamedPattern {
         val pattern = WireMock.matching(regex)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         return this
     }
 
     @WireMockDSL
     infix fun doesNotMatch(regex: String): NamedPattern {
         val pattern = WireMock.notMatching(regex)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         return this
     }
 
     @WireMockDSL
     infix fun contains(value: String): NamedPattern {
         val pattern = WireMock.containing(value)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         return this
     }
 
     @WireMockDSL
     infix fun before(value: String): DateTimeNamedPattern {
         val pattern = WireMock.before(value)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         val dateTimePattern = DateTimeNamedPattern(scope, name, this.pattern)
         scope.replace(this, dateTimePattern)
         return dateTimePattern
@@ -91,8 +92,8 @@ open class NamedPattern(
     @WireMockDSL
     infix fun after(value: String): DateTimeNamedPattern {
         val pattern = WireMock.after(value)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         val dateTimePattern = DateTimeNamedPattern(scope, name, this.pattern)
         scope.replace(this, dateTimePattern)
         return dateTimePattern
@@ -101,8 +102,8 @@ open class NamedPattern(
     @WireMockDSL
     infix fun dateTime(value: String): DateTimeNamedPattern {
         val pattern = WireMock.equalToDateTime(value)
-        this.pattern = patternFn?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
-        patternFn = null
+        this.pattern = junctionPattern?.invoke(arrayOf(this.pattern, pattern)) ?: pattern
+        junctionPattern = null
         val dateTimePattern = DateTimeNamedPattern(scope, name, this.pattern)
         scope.replace(this, dateTimePattern)
         return dateTimePattern
@@ -113,7 +114,7 @@ open class NamedPattern(
         if (this.name != name) {
             throw IllegalArgumentException(ERROR_MESSAGE)
         }
-        patternFn = WireMock::or
+        junctionPattern = WireMock::or
         return this
     }
 
@@ -123,7 +124,7 @@ open class NamedPattern(
             throw IllegalArgumentException(ERROR_MESSAGE)
         }
         this.pattern = WireMock.or(this.pattern, namedPattern.pattern)
-        patternFn = null
+        junctionPattern = null
         return this
     }
 
@@ -132,7 +133,7 @@ open class NamedPattern(
         if (this.name != name) {
             throw IllegalArgumentException(ERROR_MESSAGE)
         }
-        patternFn = WireMock::and
+        junctionPattern = WireMock::and
         return this
     }
 
@@ -142,7 +143,7 @@ open class NamedPattern(
             throw IllegalArgumentException(ERROR_MESSAGE)
         }
         this.pattern = WireMock.and(this.pattern, namedPattern.pattern)
-        patternFn = null
+        junctionPattern = null
         return this
     }
 

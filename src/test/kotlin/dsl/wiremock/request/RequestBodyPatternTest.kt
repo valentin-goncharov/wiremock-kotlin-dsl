@@ -23,7 +23,7 @@ internal class RequestBodyPatternTest {
             }
         """
 
-        assertThat(pattern json jsonBody).isSameAs(pattern)
+        assertThat(pattern equalToJson jsonBody).isSameAs(pattern)
         assertThat(pattern.pattern)
             .isInstanceOf(EqualToJsonPattern::class.java)
             .satisfies( Consumer {
@@ -37,7 +37,7 @@ internal class RequestBodyPatternTest {
 
         val stringBody = "string"
 
-        assertThat(pattern string stringBody).isSameAs(pattern)
+        assertThat(pattern equalTo stringBody).isSameAs(pattern)
         assertThat(pattern.pattern)
             .isInstanceOf(EqualToPattern::class.java)
             .satisfies( Consumer {
@@ -54,7 +54,7 @@ internal class RequestBodyPatternTest {
             </xml>
         """
 
-        assertThat(pattern xml xmlBody).isSameAs(pattern)
+        assertThat(pattern equalToXml xmlBody).isSameAs(pattern)
         assertThat(pattern.pattern)
             .isInstanceOf(EqualToXmlPattern::class.java)
             .satisfies( Consumer {
@@ -86,6 +86,68 @@ internal class RequestBodyPatternTest {
             .isInstanceOf(NegativeRegexPattern::class.java)
             .satisfies( Consumer {
                 assertThat(it.expected).isEqualTo(regex)
+            })
+    }
+
+    @Test
+    fun `or should set pattern to LogicalOr`() {
+
+        val body = RequestBodyScope()
+
+        val regexp = ".*AAA.*"
+
+        pattern matches regexp or body doesNotMatch regexp
+
+        assertThat(pattern.pattern)
+            .isInstanceOf(LogicalOr::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo("matches .*AAA.* OR doesNotMatch .*AAA.*")
+            })
+    }
+
+    @Test
+    fun `or with pattern should set pattern to LogicalOr`() {
+        val regexp = ".*AAA.*"
+
+        val other = RequestBodyPattern() equalTo "string"
+
+        pattern matches regexp or other
+
+        assertThat(pattern.pattern)
+            .isInstanceOf(LogicalOr::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo("matches .*AAA.* OR equalTo string")
+            })
+    }
+
+    @Test
+    fun `and should set pattern to LogicalAnd`() {
+
+        val body = RequestBodyScope()
+
+        val regexp = ".*AAA.*"
+
+        pattern matches regexp and body doesNotMatch regexp
+
+        assertThat(pattern.pattern)
+            .isInstanceOf(LogicalAnd::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo("matches .*AAA.* AND doesNotMatch .*AAA.*")
+            })
+    }
+
+    @Test
+    fun `and with pattern should set pattern to LogicalAnd`() {
+        val regexp = ".*AAA.*"
+
+        val other = RequestBodyPattern() equalTo "string"
+
+        pattern matches regexp and other
+
+        assertThat(pattern.pattern)
+            .isInstanceOf(LogicalAnd::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo("matches .*AAA.* AND equalTo string")
             })
     }
 }

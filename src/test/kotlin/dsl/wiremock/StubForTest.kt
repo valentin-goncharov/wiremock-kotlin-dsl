@@ -43,7 +43,7 @@ class StubForTest {
                {
                 "key": "value" 
                } 
-            """
+            """ or (body matches ".*es.*" and body doesNotMatch "sss")
 
             metadata {
                 "attribute" attr "value"
