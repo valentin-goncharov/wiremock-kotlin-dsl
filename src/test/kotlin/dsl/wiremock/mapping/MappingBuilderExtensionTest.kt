@@ -98,7 +98,7 @@ internal class MappingBuilderExtensionTest {
     @Test
     fun `withRequestBodyPatterns should add body patterns to the mapping builder`() {
 
-        val patternOne = RequestBodyPattern().json("""{"key": "value"}""")
+        val patternOne = RequestBodyPattern().equalToJson("""{"key": "value"}""")
         val patternTwo = RequestBodyPattern().matches(".*value.*")
 
         builder.withRequestBodyPatterns(listOf(patternOne, patternTwo))
