@@ -1,6 +1,8 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.10'
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group 'com.github.valentin-goncharov'
@@ -22,4 +24,66 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'wiremock-kotlin-dsl'
+
+            from components.java
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+
+            pom {
+                name = 'WireMock Kotlin DSL'
+                description = 'Kotlin DSL fro WireMock library'
+                url = 'https://github.com/valentin-goncharov/wiremock-kotlin-dsl'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'valentin-goncharov'
+                        name = 'Valentin Goncharov'
+                        email = 'goncharov.valentin@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com:valentin-goncharov/wiremock-kotlin-dsl.git'
+                    developerConnection = 'scm:git:ssh://github.com:valentin-goncharov/wiremock-kotlin-dsl.git'
+                    url = 'https://github.com/valentin-goncharov/wiremock-kotlin-dsl'
+                }
+            }
+        }
+
+    }
+
+    repositories {
+        maven {
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username System.getProperty("MAVEN_USER")
+                password System.getProperty("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
