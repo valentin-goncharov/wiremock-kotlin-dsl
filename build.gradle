@@ -74,6 +74,7 @@ publishing {
 nexusPublishing {
     repositories {
         sonatype {
+            println "creds:" + System.getenv("MAVEN_USERNAME") + ":" + System.getenv("MAVEN_PASSWORD")
             nexusUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
             snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
             username = System.getenv("MAVEN_USERNAME")
