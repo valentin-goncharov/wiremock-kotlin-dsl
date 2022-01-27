@@ -77,8 +77,8 @@ publishing {
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
             credentials {
-                username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("USSRH_TOKEN")
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
             }
         }
     }
@@ -86,8 +86,8 @@ publishing {
 
 signing {
 
-    def key = System.getenv("SIGNING_KEY")
-    def password = System.getenv("SIGNING_PASSPHRASE")
+    def key = System.getenv("GPG_KEY")
+    def password = System.getenv("GPG_PASSPHRASE")
 
     useInMemoryPgpKeys(key, password)
 
