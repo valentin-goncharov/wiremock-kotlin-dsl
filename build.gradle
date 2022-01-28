@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'io.github.valentin-goncharov'
-version '0.0.1-SNAPSHOT'
+project.version = scmVersion.version
 
 java {
     withJavadocJar()
