@@ -1,8 +1,8 @@
-name: Publish
+name: Publish to stage
 
 on:
   workflow_run:
-    workflows: [Build]
+    workflows: [CI Build]
     types: [completed]
     branches: [main]
 
@@ -27,7 +27,7 @@ jobs:
       - name: Publish to maven central
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
+          arguments: publishToSonatype
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
