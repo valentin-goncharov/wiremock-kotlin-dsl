@@ -10,6 +10,12 @@ plugins {
 group 'io.github.valentin-goncharov'
 project.version = scmVersion.version
 
+scmVersion {
+    tag {
+        prefix = ''
+    }
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
