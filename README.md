@@ -38,16 +38,12 @@ This is equivalent to JSON:
 So with DSL this stub will look the next
 ```kotlin
 fun stubTest() {
-     
     get {
         url pathMatches "/test/.*"
-
-        willReturn {
+    } returns {
             status = 200
             headers contain "Content-Type" equalTo "application/json"
             body json """{"name":"testing-library","value":"WireMock"}"""
-        }
     }
-    
 }
 ```
