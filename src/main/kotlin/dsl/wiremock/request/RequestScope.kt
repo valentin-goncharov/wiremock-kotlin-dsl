@@ -3,6 +3,7 @@ package dsl.wiremock.request
 import dsl.wiremock.WireMockDSL
 import dsl.wiremock.metadata.MetadataEntry
 import dsl.wiremock.metadata.MetadataScope
+import dsl.wiremock.request.body.RequestBodyScope
 import java.util.*
 
 @WireMockDSL

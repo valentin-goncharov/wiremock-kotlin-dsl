@@ -6,6 +6,7 @@ import dsl.wiremock.response.FaultType.CONNECTION_RESET_BY_PEER
 import dsl.wiremock.stubs.get
 import dsl.wiremock.stubs.scenario
 import org.junit.jupiter.api.Test
+import org.xmlunit.diff.ComparisonType.SCHEMA_LOCATION
 import java.time.LocalDate
 
 @WireMockTest
@@ -43,7 +44,15 @@ class StubForTest {
                {
                 "key": "value" 
                } 
-            """ or (body matches ".*es.*" and body doesNotMatch "sss")
+            """ ignore {arrayOrder = true; extraElements = true} or (body matches ".*es.*" and body doesNotMatch "sss")
+
+            body matches "ddd" and body json """{"json":"json"}"""
+
+            body xml """<xml>str</xml>""" placeholders {
+                enabled = true
+                openingDelimiterRegex = "\\[\\["
+                closingDelimiterRegex = "]]"
+            } exemptComparison "XML_VERSION" exemptComparison SCHEMA_LOCATION or body matches ".*ssss.*"
 
             metadata {
                 "attribute" attr "value"

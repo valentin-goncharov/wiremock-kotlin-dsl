@@ -9,7 +9,9 @@ import com.github.tomakehurst.wiremock.matching.UrlPattern
 import dsl.wiremock.request.Cookie
 import dsl.wiremock.request.Header
 import dsl.wiremock.request.Parameter
-import dsl.wiremock.request.RequestBodyPattern
+import dsl.wiremock.request.body.StringValueRequestBodyPattern
+import dsl.wiremock.request.body.JsonBodyPattern
+import dsl.wiremock.request.body.RequestBodyScope
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,6 +20,8 @@ import java.util.function.Consumer
 internal class MappingBuilderExtensionTest {
 
     lateinit var builder: MappingBuilder
+
+    val scope = RequestBodyScope()
 
     @BeforeEach
     fun init() {
@@ -98,8 +102,8 @@ internal class MappingBuilderExtensionTest {
     @Test
     fun `withRequestBodyPatterns should add body patterns to the mapping builder`() {
 
-        val patternOne = RequestBodyPattern().equalToJson("""{"key": "value"}""")
-        val patternTwo = RequestBodyPattern().matches(".*value.*")
+        val patternOne = JsonBodyPattern(scope).equalToJson("""{"key": "value"}""")
+        val patternTwo = StringValueRequestBodyPattern(scope).matches(".*value.*")
 
         builder.withRequestBodyPatterns(listOf(patternOne, patternTwo))
 
