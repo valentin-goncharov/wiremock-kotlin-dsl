@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.containing
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
+import com.github.tomakehurst.wiremock.client.WireMock.equalToXml
 import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.notMatching
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
@@ -44,6 +45,19 @@ internal class JsonPathBodyPatternTest {
         val pattern = body jsonPath jsonPath equalToJson jsonBody
 
         val vmPattern = WireMock.matchingJsonPath(jsonPath, equalToJson(jsonBody))
+
+        assertThat(pattern.getPattern()).isEqualTo(vmPattern)
+    }
+
+    @Test
+    fun `equalToXml should create pattern equals to WireMock pattern`() {
+
+        val jsonPath = "$..name"
+        val xmlBody = """<xml>value</xml>"""
+
+        val pattern = body jsonPath jsonPath equalToXml xmlBody
+
+        val vmPattern = WireMock.matchingJsonPath(jsonPath, equalToXml(xmlBody))
 
         assertThat(pattern.getPattern()).isEqualTo(vmPattern)
     }

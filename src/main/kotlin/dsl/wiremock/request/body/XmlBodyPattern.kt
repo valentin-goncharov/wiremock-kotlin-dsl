@@ -36,10 +36,7 @@ class XmlBodyPattern: StringValueRequestBodyPattern, XmlRequestBodyPattern {
 
     @WireMockDSL
     override fun exemptComparison(comparison: String): XmlRequestBodyPattern {
-        val comparisonType = ComparisonType.valueOf(comparison)
-        comparisons.add(comparisonType)
-        modifyPattern((this.valuePattern as EqualToXmlPattern).exemptingComparisons(comparisonType))
-        return this
+        return exemptComparison(ComparisonType.valueOf(comparison))
     }
 
     @WireMockDSL

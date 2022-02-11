@@ -59,6 +59,9 @@ class StubForTest {
             body jsonPath "$.key" contains "value"
             body jsonPath "$.key" contains "value" and body json """{"key":"value","key2":"value2"}"""
             body jsonPath "$.sub" equalToJson """{"key":"value"}""" ignore {arrayOrder = true}
+            body jsonPath "$.sub" equalToXml """<xml>value</xml>""" placeholders {
+                enabled = true
+            } exemptComparison SCHEMA_LOCATION
 
 
             metadata {
