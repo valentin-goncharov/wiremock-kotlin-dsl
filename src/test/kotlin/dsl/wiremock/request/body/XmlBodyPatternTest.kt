@@ -1,5 +1,6 @@
 package dsl.wiremock.request.body
 
+import com.github.tomakehurst.wiremock.client.WireMock.equalToXml
 import com.github.tomakehurst.wiremock.matching.EqualToXmlPattern
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -8,7 +9,7 @@ import java.util.function.Consumer
 
 internal class XmlBodyPatternTest {
 
-    private val scope = RequestBodyScope()
+    private val body = RequestBodyScope()
 
     @Test
     fun `placeholders should apply pattern placeholders`() {
@@ -19,7 +20,7 @@ internal class XmlBodyPatternTest {
             </xml>
         """
 
-        val pattern = XmlBodyPattern(scope)
+        val pattern = XmlBodyPattern(body)
 
         pattern.equalToXml(xmlBody)
 
@@ -57,7 +58,7 @@ internal class XmlBodyPatternTest {
             </xml>
         """
 
-        val pattern = XmlBodyPattern(scope)
+        val pattern = XmlBodyPattern(body)
 
         pattern.equalToXml(xmlBody)
         pattern exemptComparison "ELEMENT_TAG_NAME"
@@ -80,7 +81,7 @@ internal class XmlBodyPatternTest {
             </xml>
         """
 
-        val pattern = XmlBodyPattern(scope)
+        val pattern = XmlBodyPattern(body)
 
         pattern.equalToXml(xmlBody)
         pattern exemptComparison "ELEMENT_TAG_NAME"
@@ -97,5 +98,30 @@ internal class XmlBodyPatternTest {
                 assertThat(xmlPattern.exemptedComparisons).hasSize(1)
                 assertThat(xmlPattern.exemptedComparisons).contains(ELEMENT_TAG_NAME)
             })
+    }
+
+    @Test
+    fun `xml with placeholders and exemptComparison should has the same expected as WireMock pattern`() {
+
+        val xmlBody = """
+            <xml>
+               <key>value</key>
+            </xml>""".trimIndent()
+
+        val wmPattern = equalToXml(
+            xmlBody,
+            true,
+            "\\[\\[",
+            "]]").exemptingComparisons(ELEMENT_TAG_NAME)
+
+        body xml xmlBody placeholders {
+            enabled = true
+            openingDelimiterRegex = "\\[\\["
+            closingDelimiterRegex = "]]"
+        } exemptComparison ELEMENT_TAG_NAME
+
+        val pattern = body.patterns[0]
+
+        assertThat(pattern.getPattern().expected).isEqualTo(wmPattern.expected)
     }
 }

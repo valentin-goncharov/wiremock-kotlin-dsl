@@ -11,6 +11,7 @@ class RequestBodyScope {
 
         val pattern = patterns.lastOrNull()?.let {
             if (it.isJunction()) {
+                patterns.remove(it)
                 JsonBodyPattern(it)
             } else {
                 JsonBodyPattern(this)
@@ -26,6 +27,7 @@ class RequestBodyScope {
     infix fun xml(str: String): XmlRequestBodyPattern {
         val pattern = patterns.lastOrNull()?.let {
             if (it.isJunction()) {
+                patterns.remove(it)
                 XmlBodyPattern(it)
             } else {
                 XmlBodyPattern(this)
@@ -42,6 +44,7 @@ class RequestBodyScope {
 
         val pattern = patterns.lastOrNull()?.let {
             if (it.isJunction()) {
+                patterns.remove(it)
                 StringValueRequestBodyPattern(it)
             } else {
                 StringValueRequestBodyPattern(this)
@@ -58,6 +61,7 @@ class RequestBodyScope {
 
         val pattern = patterns.lastOrNull()?.let {
             if (it.isJunction()) {
+                patterns.remove(it)
                 StringValueRequestBodyPattern(it)
             } else {
                 StringValueRequestBodyPattern(this)
@@ -73,6 +77,7 @@ class RequestBodyScope {
     infix fun doesNotMatch(str: String): JunctionableBodyPattern {
         val pattern = patterns.lastOrNull()?.let {
             if (it.isJunction()) {
+                patterns.remove(it)
                 StringValueRequestBodyPattern(it)
             } else {
                 StringValueRequestBodyPattern(this)
