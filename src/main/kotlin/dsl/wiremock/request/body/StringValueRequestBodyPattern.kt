@@ -28,6 +28,12 @@ open class StringValueRequestBodyPattern: BasicRequestBodyPattern, JunctionableB
         return this
     }
 
+    override fun contains(str: String): JunctionableBodyPattern {
+        this.currentValue = str
+        applyPattern(WireMock.containing(currentValue))
+        return this
+    }
+
     override fun matches(str: String): JunctionableBodyPattern {
         this.currentValue = str
         applyPattern(WireMock.matching(currentValue))

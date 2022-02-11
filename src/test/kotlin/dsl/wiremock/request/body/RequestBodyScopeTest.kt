@@ -49,6 +49,20 @@ internal class RequestBodyScopeTest {
     }
 
     @Test
+    fun `contains should set pattern to ContainsPattern`() {
+        val string = "some string"
+
+        body contains string
+
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].getPattern())
+            .isInstanceOf(ContainsPattern::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo(string)
+            })
+    }
+
+    @Test
     fun `xml should set pattern to EqualToXmlPattern`() {
         val xml = """
             <xml>

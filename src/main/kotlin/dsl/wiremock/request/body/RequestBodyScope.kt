@@ -57,6 +57,23 @@ class RequestBodyScope {
     }
 
     @WireMockDSL
+    infix fun contains(str: String): JunctionableBodyPattern {
+
+        val pattern = patterns.lastOrNull()?.let {
+            if (it.isJunction()) {
+                patterns.remove(it)
+                StringValueRequestBodyPattern(it)
+            } else {
+                StringValueRequestBodyPattern(this)
+            }
+        } ?: StringValueRequestBodyPattern(this)
+
+        pattern.contains(str)
+        patterns += pattern
+        return pattern
+    }
+
+    @WireMockDSL
     infix fun matches(str: String): JunctionableBodyPattern {
 
         val pattern = patterns.lastOrNull()?.let {

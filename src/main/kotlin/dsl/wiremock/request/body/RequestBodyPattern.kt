@@ -54,6 +54,8 @@ interface StringValuePatternWrapper {
 
     fun equalTo(str: String): JunctionableBodyPattern
 
+    fun contains(str: String): JunctionableBodyPattern
+
     fun matches(str: String): JunctionableBodyPattern
 
     fun doesNotMatch(str: String): JunctionableBodyPattern

@@ -1,6 +1,7 @@
 package dsl.wiremock.request.body
 
 import com.github.tomakehurst.wiremock.client.WireMock.and
+import com.github.tomakehurst.wiremock.client.WireMock.containing
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.matching
 import org.assertj.core.api.Assertions.assertThat
@@ -34,5 +35,7 @@ internal class AndRequestBodyPatternTest {
         val pattern = body.patterns[0]
 
         assertThat(pattern.getPattern().expected).isEqualTo(wmPattern.expected)
+
+        containing("sss", )
     }
 }
