@@ -10,9 +10,9 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
     private var lastJunctionPattern: ((Array<StringValuePattern>) -> StringValuePattern)? = null
 
     protected lateinit var currentValue: String
-    protected lateinit var currentPattern: StringValuePattern
+    protected lateinit var valuePattern: StringValuePattern
 
-    private lateinit var valuePattern: StringValuePattern
+    private lateinit var currentPattern: StringValuePattern
     private var originalPattern: StringValuePattern? = null
 
     constructor(pattern: BasicRequestBodyPattern) : this(pattern.scope) {
@@ -27,14 +27,14 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
     override fun isJunction(): Boolean = junctionPattern != null
 
     override fun getPattern(): StringValuePattern {
-        return valuePattern
+        return currentPattern
     }
 
     protected fun applyPattern(pattern: StringValuePattern) {
 
-        currentPattern = pattern
+        valuePattern = pattern
 
-        this.valuePattern = junctionPattern?.let{
+        this.currentPattern = junctionPattern?.let{
             lastJunctionPattern = junctionPattern
             it.invoke(arrayOf(originalPattern!!, pattern))
         } ?: pattern
@@ -43,8 +43,8 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
     }
 
     protected fun modifyPattern(pattern: StringValuePattern) {
-        this.currentPattern = pattern
-        this.valuePattern = lastJunctionPattern?.invoke(arrayOf(this.originalPattern!!, pattern)) ?: pattern
+        this.valuePattern = pattern
+        this.currentPattern = lastJunctionPattern?.invoke(arrayOf(this.originalPattern!!, pattern)) ?: pattern
     }
 
     @WireMockDSL

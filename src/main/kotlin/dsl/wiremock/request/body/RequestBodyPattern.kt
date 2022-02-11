@@ -27,7 +27,7 @@ class JsonIgnoreScope(var arrayOrder: Boolean = false, var extraElements: Boolea
 
 interface JsonRequestBodyPattern: JunctionableBodyPattern {
     @WireMockDSL
-    infix fun ignore(fn: JsonIgnoreScope.()->Unit): JsonRequestBodyPattern
+    infix fun ignore(fn: JsonIgnoreScope.()->Unit): StringValuePatternWrapper
 }
 
 class XmlPlaceholdersScope(
@@ -47,7 +47,7 @@ interface XmlRequestBodyPattern: JunctionableBodyPattern {
     infix fun exemptComparison(comparisonType: ComparisonType): XmlRequestBodyPattern
 }
 
-interface StringValuePatternWrapper {
+interface StringValuePatternWrapper: JunctionableBodyPattern {
     fun equalToJson(str: String): JunctionableBodyPattern
 
     fun equalToXml(str: String): JunctionableBodyPattern

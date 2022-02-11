@@ -108,4 +108,18 @@ internal class RequestBodyScopeTest {
                 assertThat(it.expected).isEqualTo(regexp)
             })
     }
+
+    @Test
+    fun `jsonPath should set pattern to MatchesJsonPathPattern`() {
+        val jsonPath = "$..name"
+
+        body jsonPath jsonPath
+
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].getPattern())
+            .isInstanceOf(MatchesJsonPathPattern::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo(jsonPath)
+            })
+    }
 }

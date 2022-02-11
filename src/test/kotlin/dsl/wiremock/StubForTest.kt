@@ -54,6 +54,13 @@ class StubForTest {
                 closingDelimiterRegex = "]]"
             } exemptComparison "XML_VERSION" exemptComparison SCHEMA_LOCATION or body matches ".*ssss.*"
 
+
+            body jsonPath "$.key"
+            body jsonPath "$.key" contains "value"
+            body jsonPath "$.key" contains "value" and body json """{"key":"value","key2":"value2"}"""
+            body jsonPath "$.sub" equalToJson """{"key":"value"}""" ignore {arrayOrder = true}
+
+
             metadata {
                 "attribute" attr "value"
                 "nested" metadata {

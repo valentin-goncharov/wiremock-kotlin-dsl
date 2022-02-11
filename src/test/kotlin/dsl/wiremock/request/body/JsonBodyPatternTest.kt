@@ -43,7 +43,7 @@ internal class JsonBodyPatternTest {
 
 
     @Test
-    fun `json with ignore should has the same expected as WireMock pattern`() {
+    fun `json with ignore should create pattern equals to WireMock pattern`() {
 
         val jsonBody = """{"key": "value"}"""
 
@@ -53,7 +53,7 @@ internal class JsonBodyPatternTest {
 
         val pattern = body.patterns[0]
 
-        assertThat(pattern.getPattern().expected).isEqualTo(wmPattern.expected)
+        assertThat(pattern.getPattern()).isEqualTo(wmPattern)
     }
 
 }
