@@ -1,4 +1,4 @@
-package dsl.wiremock.request
+package dsl.wiremock.request.body
 
 import com.github.tomakehurst.wiremock.matching.*
 import org.assertj.core.api.Assertions.assertThat
@@ -27,7 +27,7 @@ internal class RequestBodyScopeTest {
         body json json
 
         assertThat(body.patterns).hasSize(1)
-        assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns[0].getPattern())
             .satisfies( Consumer {
                 val jsonPattern = it as EqualToJsonPattern
                 assertThat(jsonPattern.equalToJson).isEqualTo(json.trimIndent())
@@ -41,7 +41,7 @@ internal class RequestBodyScopeTest {
         body string string
 
         assertThat(body.patterns).hasSize(1)
-        assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns[0].getPattern())
             .isInstanceOf(EqualToPattern::class.java)
             .satisfies( Consumer {
                 assertThat(it.expected).isEqualTo(string)
@@ -59,7 +59,7 @@ internal class RequestBodyScopeTest {
         body xml xml
 
         assertThat(body.patterns).hasSize(1)
-        assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns[0].getPattern())
             .isInstanceOf(EqualToXmlPattern::class.java)
             .satisfies( Consumer {
                 val xmlPattern = it as EqualToXmlPattern
@@ -74,7 +74,7 @@ internal class RequestBodyScopeTest {
         body matches regexp
 
         assertThat(body.patterns).hasSize(1)
-        assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns[0].getPattern())
             .isInstanceOf(RegexPattern::class.java)
             .satisfies( Consumer {
                 assertThat(it.expected).isEqualTo(regexp)
@@ -88,7 +88,7 @@ internal class RequestBodyScopeTest {
         body doesNotMatch regexp
 
         assertThat(body.patterns).hasSize(1)
-        assertThat(body.patterns[0].pattern)
+        assertThat(body.patterns[0].getPattern())
             .isInstanceOf(NegativeRegexPattern::class.java)
             .satisfies( Consumer {
                 assertThat(it.expected).isEqualTo(regexp)

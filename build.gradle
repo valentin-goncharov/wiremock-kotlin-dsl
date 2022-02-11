@@ -10,6 +10,12 @@ plugins {
 group 'io.github.valentin-goncharov'
 project.version = scmVersion.version
 
+scmVersion {
+    tag {
+        prefix = ''
+    }
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -70,7 +76,9 @@ publishing {
 nexusPublishing {
     repositories {
         sonatype {
-            stagingProfileId = "io.github.valentin-goncharov"
+            stagingProfileId = "6c056bced4ee00"
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             username = System.getenv("MAVEN_USERNAME")
             password = System.getenv("MAVEN_PASSWORD")
         }
