@@ -74,6 +74,15 @@ class RequestBodyScope {
         return pattern
     }
 
+    @WireMockDSL
+    infix fun xmlPath(str: String): XPathBodyPattern {
+        val pattern: XPathBodyPattern = createPattern()
+
+        pattern.matchingXPath(str)
+        patterns += pattern
+        return pattern
+    }
+
     fun remove(pattern: RequestBodyPattern) {
         patterns.remove(pattern)
     }

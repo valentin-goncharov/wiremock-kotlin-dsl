@@ -17,7 +17,7 @@ internal class JsonPathBodyPatternTest {
     private val body = RequestBodyScope()
 
     @Test
-    fun `matchingJsonPath should has the same expected as WireMock pattern`() {
+    fun `matchingJsonPath should create pattern equals to WireMock pattern`() {
 
         val jsonPath = "$..name"
 
@@ -33,7 +33,7 @@ internal class JsonPathBodyPatternTest {
 
         val vmPattern = WireMock.matchingJsonPath(jsonPath)
 
-        assertThat(pattern.getPattern().expected).isEqualTo(vmPattern.expected)
+        assertThat(pattern.getPattern()).isEqualTo(vmPattern)
     }
 
     @Test

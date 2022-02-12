@@ -42,7 +42,7 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
         junctionPattern = null
     }
 
-    protected fun modifyPattern(pattern: StringValuePattern) {
+    protected open fun modifyPattern(pattern: StringValuePattern) {
         this.valuePattern = pattern
         this.currentPattern = lastJunctionPattern?.invoke(arrayOf(this.originalPattern!!, pattern)) ?: pattern
     }

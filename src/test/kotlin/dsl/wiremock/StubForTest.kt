@@ -63,6 +63,13 @@ class StubForTest {
                 enabled = true
             } exemptComparison SCHEMA_LOCATION
 
+            body xmlPath "//key/text()"
+            body xmlPath "//key/text()" contains "value"
+            body xmlPath "//test:key/text()" namespace "test = https://test.example.com" matches ".*value.*"
+            body xmlPath "//test:key/text()" namespace "test = https://test.example.com"
+            body xmlPath "//key/text()" equalToJson """{"key":"value"}""" or
+                    body xmlPath "//key/text()" equalToXml """<key>value</key>""" exemptComparison SCHEMA_LOCATION
+
 
             metadata {
                 "attribute" attr "value"

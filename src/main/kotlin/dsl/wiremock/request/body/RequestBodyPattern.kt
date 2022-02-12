@@ -47,6 +47,31 @@ interface XmlRequestBodyPattern: JunctionableBodyPattern {
     infix fun exemptComparison(comparisonType: ComparisonType): XmlRequestBodyPattern
 }
 
+interface PathValuePattern: StringValuePatternWrapper {
+    @WireMockDSL
+    override infix fun equalToJson(str: String): JunctionableBodyPattern
+
+    @WireMockDSL
+    override infix fun equalToXml(str: String): JunctionableBodyPattern
+
+    @WireMockDSL
+    override infix fun equalTo(str: String): JunctionableBodyPattern
+
+    @WireMockDSL
+    override infix fun contains(str: String): JunctionableBodyPattern
+
+    @WireMockDSL
+    override infix fun matches(str: String): JunctionableBodyPattern
+
+    @WireMockDSL
+    override infix fun doesNotMatch(str: String): JunctionableBodyPattern
+}
+
+interface XPathRequestBodyPattern: PathValuePattern {
+    @WireMockDSL
+    infix fun namespace(namespace: String) : XPathRequestBodyPattern
+}
+
 interface StringValuePatternWrapper: JunctionableBodyPattern {
     fun equalToJson(str: String): JunctionableBodyPattern
 
