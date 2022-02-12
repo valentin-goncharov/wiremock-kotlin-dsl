@@ -54,6 +54,23 @@ class StubForTest {
                 closingDelimiterRegex = "]]"
             } exemptComparison "XML_VERSION" exemptComparison SCHEMA_LOCATION or body matches ".*ssss.*"
 
+
+            body jsonPath "$.key"
+            body jsonPath "$.key" contains "value"
+            body jsonPath "$.key" contains "value" and body json """{"key":"value","key2":"value2"}"""
+            body jsonPath "$.sub" equalToJson """{"key":"value"}""" ignore {arrayOrder = true}
+            body jsonPath "$.sub" equalToXml """<xml>value</xml>""" placeholders {
+                enabled = true
+            } exemptComparison SCHEMA_LOCATION
+
+            body xmlPath "//key/text()"
+            body xmlPath "//key/text()" contains "value"
+            body xmlPath "//test:key/text()" namespace "test = https://test.example.com" matches ".*value.*"
+            body xmlPath "//test:key/text()" namespace "test = https://test.example.com"
+            body xmlPath "//key/text()" equalToJson """{"key":"value"}""" or
+                    body xmlPath "//key/text()" equalToXml """<key>value</key>""" exemptComparison SCHEMA_LOCATION
+
+
             metadata {
                 "attribute" attr "value"
                 "nested" metadata {

@@ -101,7 +101,7 @@ internal class XmlBodyPatternTest {
     }
 
     @Test
-    fun `xml with placeholders and exemptComparison should has the same expected as WireMock pattern`() {
+    fun `xml with placeholders and exemptComparison should create pattern equals to WireMock pattern`() {
 
         val xmlBody = """
             <xml>
@@ -122,6 +122,6 @@ internal class XmlBodyPatternTest {
 
         val pattern = body.patterns[0]
 
-        assertThat(pattern.getPattern().expected).isEqualTo(wmPattern.expected)
+        assertThat(pattern.getPattern()).isEqualTo(wmPattern)
     }
 }

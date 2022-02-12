@@ -11,7 +11,7 @@ class JsonBodyPattern: StringValueRequestBodyPattern, JsonRequestBodyPattern {
     constructor(pattern: RequestBodyPattern): super(pattern)
 
     @WireMockDSL
-    override infix fun ignore(fn: JsonIgnoreScope.()->Unit): JsonRequestBodyPattern {
+    override infix fun ignore(fn: JsonIgnoreScope.()->Unit): StringValuePatternWrapper {
         val ignoreScope = JsonIgnoreScope()
         ignoreScope.apply(fn)
         modifyPattern(WireMock.equalToJson(this.currentValue, ignoreScope.arrayOrder, ignoreScope.extraElements))

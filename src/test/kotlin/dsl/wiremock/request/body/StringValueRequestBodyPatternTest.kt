@@ -18,7 +18,7 @@ internal class StringValueRequestBodyPatternTest {
     }
 
     @Test
-    fun `json should set pattern to EqualToJsonPattern and return the same object`() {
+    fun `equalToJson should set pattern to EqualToJsonPattern and return the same object`() {
 
         val jsonBody = """
             {
@@ -38,7 +38,7 @@ internal class StringValueRequestBodyPatternTest {
     }
 
     @Test
-    fun `string should set pattern to EqualToPattern and return the same object`() {
+    fun `equalTo should set pattern to EqualToPattern and return the same object`() {
 
         val stringBody = "string"
 
@@ -51,7 +51,20 @@ internal class StringValueRequestBodyPatternTest {
     }
 
     @Test
-    fun `xml should set pattern to EqualToXmlPattern and return the same object`() {
+    fun `contains should set pattern to ContainsPattern and return the same object`() {
+
+        val stringBody = "string"
+
+        assertThat(pattern.contains(stringBody)).isSameAs(pattern)
+        assertThat(pattern.getPattern())
+            .isInstanceOf(ContainsPattern::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo(stringBody)
+            })
+    }
+
+    @Test
+    fun `equalToXml should set pattern to EqualToXmlPattern and return the same object`() {
 
         val xmlBody = """
             <xml>
@@ -98,7 +111,6 @@ internal class StringValueRequestBodyPatternTest {
 
     @Test
     fun `or should set pattern to LogicalOr`() {
-
 
         val regexp = ".*AAA.*"
 
