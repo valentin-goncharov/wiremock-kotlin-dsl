@@ -30,7 +30,7 @@ class JsonPathBodyPattern: StringValueRequestBodyPattern {
     override infix fun equalToXml(str: String): XmlRequestBodyPattern {
         val value = str.trimIndent()
         modifyPattern(WireMock.matchingJsonPath(this.currentValue, WireMock.equalToXml(value)))
-        val xmlPattern = EqualToXmlBodyPattern(this, value)
+        val xmlPattern = EqualToXmlBodyPattern(this, value, WireMock.equalToXml(value))
         scope.replace(this, xmlPattern)
         return xmlPattern
     }
@@ -79,12 +79,13 @@ internal class EqualToJsonBodyPattern(pattern: RequestBodyPattern, value: String
     }
 }
 
-internal class EqualToXmlBodyPattern(pattern: RequestBodyPattern, value: String)
+internal class EqualToXmlBodyPattern(pattern: RequestBodyPattern, value: String, valuePattern: EqualToXmlPattern)
     : StringValueRequestBodyPattern(pattern), XmlRequestBodyPattern {
 
     private val comparisons = mutableSetOf<ComparisonType>()
 
     private val xmlValue: String = value
+    private var xmlValuePattern: EqualToXmlPattern = valuePattern
 
     @WireMockDSL
     override fun placeholders(fn: XmlPlaceholdersScope.() -> Unit): XmlRequestBodyPattern {
@@ -93,15 +94,17 @@ internal class EqualToXmlBodyPattern(pattern: RequestBodyPattern, value: String)
 
         placeholdersScope.apply(fn)
 
-        var pattern = WireMock.equalToXml(
+        xmlValuePattern = WireMock.equalToXml(
             this.xmlValue,
             placeholdersScope.enabled,
             placeholdersScope.openingDelimiterRegex,
             placeholdersScope.closingDelimiterRegex
         )
-        pattern = if (comparisons.isNotEmpty()) pattern.exemptingComparisons(*comparisons.toTypedArray()) else pattern
+        xmlValuePattern = if (comparisons.isNotEmpty())
+            xmlValuePattern.exemptingComparisons(*comparisons.toTypedArray())
+        else xmlValuePattern
 
-        modifyPattern(WireMock.matchingJsonPath(this.currentValue, pattern))
+        modifyPattern(WireMock.matchingJsonPath(this.currentValue, xmlValuePattern))
 
         return this
     }
@@ -114,8 +117,8 @@ internal class EqualToXmlBodyPattern(pattern: RequestBodyPattern, value: String)
     @WireMockDSL
     override fun exemptComparison(comparisonType: ComparisonType): XmlRequestBodyPattern {
         comparisons.add(comparisonType)
-        val pattern = (this.valuePattern as EqualToXmlPattern).exemptingComparisons(comparisonType)
-        modifyPattern(WireMock.matchingJsonPath(this.currentValue, pattern))
+        xmlValuePattern = xmlValuePattern.exemptingComparisons(comparisonType)
+        modifyPattern(WireMock.matchingJsonPath(this.currentValue, xmlValuePattern))
         return this
     }
 }
