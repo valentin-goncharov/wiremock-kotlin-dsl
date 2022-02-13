@@ -60,13 +60,16 @@ class ScenarioStubScope(
             builder.withName(it)
         }
 
+        if(mapping.metadata.isInitialized()) {
+            builder.withMetadata(mapping.metadata.build())
+        }
+
         builder
             .withHeaders(mapping.headers.patterns)
             .withCookies(mapping.cookies.patterns)
             .withQueryParams(mapping.queryParameters.patterns)
             .withRequestBodyPatterns(mapping.body.patterns)
             .withMultipartRequestBodyPatterns(mapping.multipart.patterns)
-            .withMetadata(mapping.metadata.build())
             .willReturn(ResponseScope().builder)
 
         buildStub()

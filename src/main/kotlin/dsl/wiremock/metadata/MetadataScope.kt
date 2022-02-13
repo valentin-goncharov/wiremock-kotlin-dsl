@@ -20,6 +20,10 @@ class MetadataScope {
     fun build(): Metadata {
         return builder.build()
     }
+
+    fun isInitialized(): Boolean {
+        return this::builder.isInitialized
+    }
 }
 
 @WireMockDSL
