@@ -5,13 +5,11 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import dsl.wiremock.mapping.*
 import dsl.wiremock.request.RequestScope
-import dsl.wiremock.mapping.withCookies
-import dsl.wiremock.mapping.withHeaders
-import dsl.wiremock.mapping.withQueryParams
-import dsl.wiremock.mapping.withRequestBodyPatterns
 import dsl.wiremock.response.FaultResponseScope
 import dsl.wiremock.response.ResponseScope
+import java.util.*
 
 class PlainStubScope(private val server: WireMockServer? = null): StubScope<RequestScope> {
 
@@ -28,21 +26,31 @@ class PlainStubScope(private val server: WireMockServer? = null): StubScope<Requ
     override fun addMapping(method: (UrlPattern) -> MappingBuilder, init: RequestScope.() -> Unit) {
         val mapping = initMapping(init)
 
-        val mappingBuilder = method(mapping.url.pattern)
+        builder = method(mapping.url.pattern)
+
+        if (mapping.authentication.isInitialized()) {
+            builder.withBasicAuth(mapping.authentication.getUsername(), mapping.authentication.getPassword())
+        }
+
+        mapping.id?.let {
+            builder.withId(UUID.fromString(it))
+        }
 
         mapping.priority?.let {
-            mappingBuilder.atPriority(it)
+            builder.atPriority(it)
         }
 
         mapping.name?.let {
-            mappingBuilder.withName(it)
+            builder.withName(it)
         }
 
-        builder = mappingBuilder
+        builder
             .withHeaders(mapping.headers.patterns)
             .withCookies(mapping.cookies.patterns)
             .withQueryParams(mapping.queryParameters.patterns)
             .withRequestBodyPatterns(mapping.body.patterns)
+            .withMultipartRequestBodyPatterns(mapping.multipart.patterns)
+            .withMetadata(mapping.metadata.build())
             .willReturn(ResponseScope().builder)
 
         buildStub()

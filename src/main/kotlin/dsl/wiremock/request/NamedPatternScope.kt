@@ -37,10 +37,10 @@ sealed class NamedPatternScope {
 
 @WireMockDSL
 open class NamedPattern(
-    
     private val scope: NamedPatternScope = defaultScope,
     val name: String,
-    pattern: StringValuePattern = ANY) {
+    pattern: StringValuePattern = ANY
+) {
 
     private var junctionPattern: ((Array<StringValuePattern>) -> StringValuePattern)? = null
 

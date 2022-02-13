@@ -24,6 +24,8 @@ class StubForTest {
             url pathEqualTo "/test/path"
             url pathMatches "/test/.*"
 
+            authentication username "login" password "password"
+
             headers contain "X-Test-Equal" equalTo "test" or "X-Test-Equal" matches "test"
             headers contain "X-Test-Match" matches "t?est.*" and "X-Test-Match" doesNotMatch "testo.+"
             headers contain "X-Test-Contains" contains "test" or ("X-Test-Contains" dateTime "2022-01-15 21:45:00" and
@@ -70,8 +72,28 @@ class StubForTest {
             body xmlPath "//key/text()" equalToJson """{"key":"value"}""" or
                     body xmlPath "//key/text()" equalToXml """<key>value</key>""" exemptComparison SCHEMA_LOCATION
 
+            multipart {
+                name = "init"
+                type = "ALL"
+                headers contain "trace"
+                body json """{"key":"value"}"""
+            }
+
+            multipart with {
+                name = "add"
+                type = "ANY"
+                headers contain "trace"
+                body json """{"key":"value"}"""
+            }
 
             metadata {
+                "attribute" attr "value"
+                "nested" metadata {
+                    "list" list listOf(1, LocalDate.now(), "some string")
+                }
+            }
+
+            metadata with {
                 "attribute" attr "value"
                 "nested" metadata {
                     "list" list listOf(1, LocalDate.now(), "some string")
