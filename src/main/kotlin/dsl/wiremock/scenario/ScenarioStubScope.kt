@@ -9,6 +9,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import dsl.wiremock.mapping.*
 import dsl.wiremock.response.FaultResponseScope
 import dsl.wiremock.response.ResponseScope
+import dsl.wiremock.response.withProxy
 import dsl.wiremock.stubs.StubScope
 import dsl.wiremock.stubs.scenario.ScenarioRequestScope
 import dsl.wiremock.stubs.scenario.ScenarioScope
@@ -76,12 +77,24 @@ class ScenarioStubScope(
     }
 
     override infix fun returns(fn: ResponseScope.() -> Unit) {
-        builder.willReturn(ResponseScope().apply(fn).builder)
+        val  response = ResponseScope().apply(fn)
+        val responseBuilder = if (response.proxy.isInitialized()) {
+            response.builder.withProxy(response.proxy)
+        } else {
+            response.builder
+        }
+        builder.willReturn(responseBuilder)
         buildStub()
     }
 
     override infix fun fails(fn: FaultResponseScope.() -> Unit) {
-        builder.willReturn(FaultResponseScope().apply(fn).builder)
+        val  response = FaultResponseScope().apply(fn)
+        val responseBuilder = if (response.proxy.isInitialized()) {
+            response.builder.withProxy(response.proxy)
+        } else {
+            response.builder
+        }
+        builder.willReturn(responseBuilder)
         buildStub()
     }
 
