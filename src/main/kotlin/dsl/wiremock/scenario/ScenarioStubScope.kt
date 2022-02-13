@@ -6,15 +6,13 @@ import com.github.tomakehurst.wiremock.client.ScenarioMappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import dsl.wiremock.mapping.withCookies
-import dsl.wiremock.mapping.withHeaders
-import dsl.wiremock.mapping.withQueryParams
-import dsl.wiremock.mapping.withRequestBodyPatterns
+import dsl.wiremock.mapping.*
 import dsl.wiremock.response.FaultResponseScope
 import dsl.wiremock.response.ResponseScope
 import dsl.wiremock.stubs.StubScope
 import dsl.wiremock.stubs.scenario.ScenarioRequestScope
 import dsl.wiremock.stubs.scenario.ScenarioScope
+import java.util.*
 
 class ScenarioStubScope(
     private val scenario: ScenarioScope,
@@ -34,30 +32,45 @@ class ScenarioStubScope(
     override fun addMapping(method: (UrlPattern) -> MappingBuilder, init: ScenarioRequestScope.() -> Unit) {
         val mapping = initMapping(init)
 
-        val scenarioMappingBuilder = method(mapping.url.pattern) as ScenarioMappingBuilder
-        scenarioMappingBuilder.inScenario(scenario.name)
+        builder = method(mapping.url.pattern) as ScenarioMappingBuilder
+
+        if (mapping.authentication.isInitialized()) {
+            builder.withBasicAuth(mapping.authentication.getUsername(), mapping.authentication.getPassword())
+        }
+
+        builder.inScenario(scenario.name)
 
         mapping.require?.let {
-            scenarioMappingBuilder.whenScenarioStateIs(it)
+            builder.whenScenarioStateIs(it)
         }
 
         mapping.state?.let {
-            scenarioMappingBuilder.willSetStateTo(it)
+            builder.willSetStateTo(it)
+        }
+
+        mapping.id?.let {
+            builder.withId(UUID.fromString(it))
         }
 
         mapping.priority?.let {
-            scenarioMappingBuilder.atPriority(it)
+            builder.atPriority(it)
         }
 
         mapping.name?.let {
-            scenarioMappingBuilder.withName(it)
+            builder.withName(it)
         }
 
-        builder = scenarioMappingBuilder
+        if(mapping.metadata.isInitialized()) {
+            builder.withMetadata(mapping.metadata.build())
+        }
+
+        builder
             .withHeaders(mapping.headers.patterns)
             .withCookies(mapping.cookies.patterns)
             .withQueryParams(mapping.queryParameters.patterns)
             .withRequestBodyPatterns(mapping.body.patterns)
+            .withMultipartRequestBodyPatterns(mapping.multipart.patterns)
+            .willReturn(ResponseScope().builder)
 
         buildStub()
     }
