@@ -103,6 +103,18 @@ class StubForTest {
             status = 200
             headers contain "ETag" equalTo "56d-9989200-1132c580"
 
+            proxy {
+                baseUrl = "https://test.com"
+                prefixToRemove = "/test/prefix"
+                headers contain "X-Test" equalTo "Content"
+            }
+
+            proxy with {
+                baseUrl = "https://test.example.com"
+                prefixToRemove = "/test/prefix"
+                headers contain "X-Test" equalTo "Content"
+            }
+
             body json """
                     {
                         "key": "value"

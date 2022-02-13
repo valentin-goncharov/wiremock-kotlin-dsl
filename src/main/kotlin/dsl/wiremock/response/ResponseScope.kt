@@ -14,4 +14,3 @@ class ResponseScope: DelayedResponse() {
 
     val body = ResponseBody(builder)
 }
-

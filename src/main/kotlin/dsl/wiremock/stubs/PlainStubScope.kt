@@ -9,6 +9,7 @@ import dsl.wiremock.mapping.*
 import dsl.wiremock.request.RequestScope
 import dsl.wiremock.response.FaultResponseScope
 import dsl.wiremock.response.ResponseScope
+import dsl.wiremock.response.withProxy
 import java.util.*
 
 class PlainStubScope(private val server: WireMockServer? = null): StubScope<RequestScope> {
@@ -60,12 +61,24 @@ class PlainStubScope(private val server: WireMockServer? = null): StubScope<Requ
     }
 
     override infix fun returns(fn: ResponseScope.() -> Unit) {
-        builder.willReturn(ResponseScope().apply(fn).builder)
+        val  response = ResponseScope().apply(fn)
+        val responseBuilder = if (response.proxy.isInitialized()) {
+            response.builder.withProxy(response.proxy)
+        } else {
+            response.builder
+        }
+        builder.willReturn(responseBuilder)
         buildStub()
     }
 
     override infix fun fails(fn: FaultResponseScope.() -> Unit) {
-        builder.willReturn(FaultResponseScope().apply(fn).builder)
+        val  response = FaultResponseScope().apply(fn)
+        val responseBuilder = if (response.proxy.isInitialized()) {
+            response.builder.withProxy(response.proxy)
+        } else {
+            response.builder
+        }
+        builder.willReturn(responseBuilder)
         buildStub()
     }
 
