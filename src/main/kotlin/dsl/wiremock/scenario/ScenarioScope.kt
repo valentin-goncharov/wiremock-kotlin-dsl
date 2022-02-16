@@ -1,15 +1,15 @@
 package dsl.wiremock.stubs.scenario
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.junit.Stubbing
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import dsl.wiremock.*
 import dsl.wiremock.scenario.ScenarioStubScope
 import dsl.wiremock.stubs.StubScope
 
 @WireMockDSL
-class ScenarioScope(val server: WireMockServer? = null) {
+class ScenarioScope(private val server: Stubbing? = null) {
     lateinit var name: String
 
     @WireMockDSL
@@ -42,7 +42,7 @@ class ScenarioScope(val server: WireMockServer? = null) {
     private fun createRequestScope(
         method: (UrlPattern) -> MappingBuilder,
         init: ScenarioRequestScope.() -> Unit,
-        server: WireMockServer? = null
+        server: Stubbing? = null
     ): StubScope<ScenarioRequestScope> {
         val scope = ScenarioStubScope(this, server)
         scope.addMapping(method, init)

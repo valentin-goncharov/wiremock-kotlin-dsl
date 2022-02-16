@@ -13,4 +13,6 @@ class ResponseScope: DelayedResponse() {
     val headers = ResponseHeaders(builder)
 
     val body = ResponseBody(builder)
+
+    val transformers = TransformersScope()
 }

@@ -1,5 +1,6 @@
 package dsl.wiremock
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import dsl.wiremock.request.dateTime
 import dsl.wiremock.response.FaultType.CONNECTION_RESET_BY_PEER
@@ -19,7 +20,9 @@ class StubForTest {
             name = "test stub"
             priority = 1
 
-            url equalTo "http://localhost:8080/test/path"
+            host equalTo "localhost"
+            port = 8081
+            url equalTo "/test/path"
             url matches "http://localhost:8080/test/.*"
             url pathEqualTo "/test/path"
             url pathMatches "/test/.*"
@@ -86,19 +89,6 @@ class StubForTest {
                 body json """{"key":"value"}"""
             }
 
-            metadata {
-                "attribute" attr "value"
-                "nested" metadata {
-                    "list" list listOf(1, LocalDate.now(), "some string")
-                }
-            }
-
-            metadata with {
-                "attribute" attr "value"
-                "nested" metadata {
-                    "list" list listOf(1, LocalDate.now(), "some string")
-                }
-            }
         } returns {
             status = 200
             headers contain "ETag" equalTo "56d-9989200-1132c580"
@@ -120,6 +110,22 @@ class StubForTest {
                         "key": "value"
                     }
                 """
+
+            transformers with "response-template"
+            transformers with "transformer"
+            transformers withParameter "parameter" equalTo "value"
+        } metadata {
+            "attribute" attr "value"
+            "nested" metadata {
+                "list" list listOf(1, LocalDate.now(), "some string")
+            }
+        } postSevereAction {
+            name = "webhook"
+            parameters from {
+                mapOf(
+
+                )
+            }
         }
     }
 
@@ -196,5 +202,19 @@ class StubForTest {
 
             }
         }
+    }
+
+    @Test
+    fun withServer() {
+        val server = WireMockServer()
+        server.start()
+        with(server) {
+            get {
+
+            } returns {
+                status = 404
+            }
+        }
+        server.stop()
     }
 }

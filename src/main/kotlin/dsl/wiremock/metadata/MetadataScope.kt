@@ -7,10 +7,6 @@ import dsl.wiremock.WireMockDSL
 class MetadataScope {
     private lateinit var builder: Metadata.Builder
 
-    @WireMockDSL
-    infix fun with (fn: MetadataEntry.() -> Unit) = apply(fn)
-
-
     fun apply(fn: MetadataEntry.() -> Unit) {
         val entry = MetadataEntry(Metadata.metadata())
         entry.apply(fn)
