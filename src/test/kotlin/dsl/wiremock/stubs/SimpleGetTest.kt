@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import io.ktor.client.request.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.RegisterExtension
 
 
 @WireMockTest
+@ExperimentalCoroutinesApi
 internal class SimpleGetTest: BaseStubTest() {
 
     @RegisterExtension

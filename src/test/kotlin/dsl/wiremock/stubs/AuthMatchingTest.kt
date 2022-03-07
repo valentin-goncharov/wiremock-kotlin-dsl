@@ -8,6 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.client.features.auth.*
 import io.ktor.client.features.auth.providers.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test
 
 
 @WireMockTest(httpPort = 9090)
+@ExperimentalCoroutinesApi
 internal class AuthMatchingTest: BaseStubTest() {
 
     private lateinit var clientAuth: HttpClient

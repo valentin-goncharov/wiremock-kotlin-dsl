@@ -2,11 +2,13 @@ package dsl.wiremock.stubs
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import io.ktor.client.request.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 @WireMockTest(httpPort = 9090)
+@ExperimentalCoroutinesApi
 internal class QueryParametersMatchingTest: BaseStubTest() {
 
     @Test
