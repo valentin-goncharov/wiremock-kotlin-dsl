@@ -102,11 +102,11 @@ class RequestBodyScope {
         return pattern
     }
 
-    fun remove(pattern: RequestBodyPattern) {
+    internal fun remove(pattern: RequestBodyPattern) {
         patterns.remove(pattern)
     }
 
-    fun replace(old: RequestBodyPattern, pattern: RequestBodyPattern) {
+    internal fun replace(old: RequestBodyPattern, pattern: RequestBodyPattern) {
         patterns.remove(old)
         patterns.add(pattern)
     }
