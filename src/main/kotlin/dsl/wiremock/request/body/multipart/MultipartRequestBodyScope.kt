@@ -34,12 +34,11 @@ class MultipartRequestBodyScope {
     val patterns = mutableListOf<MultipartValuePatternBuilder>()
 
     fun add (pattern: MultipartRequestBodyPattern) {
-        val multipartPatternBuilder  = aMultipart().
-            withName(pattern.name)
+        val multipartPatternBuilder  = aMultipart()
             .matchingType(MatchingType.valueOf(pattern.type))
             .withHeaders(pattern.headers.patterns)
             .withRequestBodyPatterns(pattern.body.patterns)
-
+        pattern.name?.let { multipartPatternBuilder.withName(pattern.name) }
         patterns.add(multipartPatternBuilder)
     }
 }
