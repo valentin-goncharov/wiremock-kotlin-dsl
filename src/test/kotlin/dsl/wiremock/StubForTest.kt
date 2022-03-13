@@ -83,13 +83,6 @@ class StubForTest {
                 body json """{"key":"value"}"""
             }
 
-            multipart with {
-                name = "add"
-                type = "ANY"
-                headers contain "trace"
-                body json """{"key":"value"}"""
-            }
-
         } returns {
             status = 200
             headers contain "ETag" equalTo "56d-9989200-1132c580"

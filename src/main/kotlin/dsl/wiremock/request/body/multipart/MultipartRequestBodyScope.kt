@@ -33,9 +33,6 @@ class MultipartRequestBodyScope {
 
     val patterns = mutableListOf<MultipartValuePatternBuilder>()
 
-    @WireMockDSL
-    infix fun with(fn: MultipartRequestBodyPattern.() -> Unit) = add(MultipartRequestBodyPattern().apply(fn))
-
     fun add (pattern: MultipartRequestBodyPattern) {
         val multipartPatternBuilder  = aMultipart().
             withName(pattern.name)
