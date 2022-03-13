@@ -46,7 +46,6 @@ internal class HeadersMatchingTest: BaseStubTest() {
         }
 
         runTest {
-
             val response = client.get<String>("http://localhost:9090/path/any?query=anything") {
                 headers {
                     append("X-Test-Present", "anyRandomString")
