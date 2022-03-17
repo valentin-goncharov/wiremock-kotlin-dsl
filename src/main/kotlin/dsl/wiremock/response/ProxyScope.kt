@@ -28,11 +28,6 @@ class ProxyScope {
     var prefixToRemove: String = ""
     val headers =  AdditionalHeadersScope()
 
-    @WireMockDSL
-    infix fun with(fn:ProxyScope.() -> Unit) {
-        this.apply(fn)
-    }
-
     fun isInitialized(): Boolean {
         return this::baseUrl.isInitialized
     }

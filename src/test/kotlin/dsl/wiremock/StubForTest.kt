@@ -93,12 +93,6 @@ class StubForTest {
                 headers contain "X-Test" equalTo "Content"
             }
 
-            proxy with {
-                baseUrl = "https://test.example.com"
-                prefixToRemove = "/test/prefix"
-                headers contain "X-Test" equalTo "Content"
-            }
-
             body json """
                     {
                         "key": "value"
