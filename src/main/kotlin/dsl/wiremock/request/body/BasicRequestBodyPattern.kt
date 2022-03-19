@@ -1,3 +1,22 @@
+/*-
+ * ========================LICENSE_START=================================
+ * Wiremock Kotlin DSL
+ * %%
+ * Copyright (C) 2022 Valentin Goncharov
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =========================LICENSE_END==================================
+ */
 package dsl.wiremock.request.body
 
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -10,9 +29,9 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
     private var lastJunctionPattern: ((Array<StringValuePattern>) -> StringValuePattern)? = null
 
     protected lateinit var currentValue: String
-    protected lateinit var currentPattern: StringValuePattern
+    protected lateinit var valuePattern: StringValuePattern
 
-    private lateinit var valuePattern: StringValuePattern
+    private lateinit var currentPattern: StringValuePattern
     private var originalPattern: StringValuePattern? = null
 
     constructor(pattern: BasicRequestBodyPattern) : this(pattern.scope) {
@@ -27,14 +46,14 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
     override fun isJunction(): Boolean = junctionPattern != null
 
     override fun getPattern(): StringValuePattern {
-        return valuePattern
+        return currentPattern
     }
 
     protected fun applyPattern(pattern: StringValuePattern) {
 
-        currentPattern = pattern
+        valuePattern = pattern
 
-        this.valuePattern = junctionPattern?.let{
+        this.currentPattern = junctionPattern?.let{
             lastJunctionPattern = junctionPattern
             it.invoke(arrayOf(originalPattern!!, pattern))
         } ?: pattern
@@ -42,9 +61,9 @@ abstract class BasicRequestBodyPattern(val scope: RequestBodyScope): RequestBody
         junctionPattern = null
     }
 
-    protected fun modifyPattern(pattern: StringValuePattern) {
-        this.currentPattern = pattern
-        this.valuePattern = lastJunctionPattern?.invoke(arrayOf(this.originalPattern!!, pattern)) ?: pattern
+    protected open fun modifyPattern(pattern: StringValuePattern) {
+        this.valuePattern = pattern
+        this.currentPattern = lastJunctionPattern?.invoke(arrayOf(this.originalPattern!!, pattern)) ?: pattern
     }
 
     @WireMockDSL

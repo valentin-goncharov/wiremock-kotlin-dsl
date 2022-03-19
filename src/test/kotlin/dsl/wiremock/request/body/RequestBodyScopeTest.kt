@@ -49,6 +49,20 @@ internal class RequestBodyScopeTest {
     }
 
     @Test
+    fun `contains should set pattern to ContainsPattern`() {
+        val string = "some string"
+
+        body contains string
+
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].getPattern())
+            .isInstanceOf(ContainsPattern::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo(string)
+            })
+    }
+
+    @Test
     fun `xml should set pattern to EqualToXmlPattern`() {
         val xml = """
             <xml>
@@ -92,6 +106,20 @@ internal class RequestBodyScopeTest {
             .isInstanceOf(NegativeRegexPattern::class.java)
             .satisfies( Consumer {
                 assertThat(it.expected).isEqualTo(regexp)
+            })
+    }
+
+    @Test
+    fun `jsonPath should set pattern to MatchesJsonPathPattern`() {
+        val jsonPath = "$..name"
+
+        body jsonPath jsonPath
+
+        assertThat(body.patterns).hasSize(1)
+        assertThat(body.patterns[0].getPattern())
+            .isInstanceOf(MatchesJsonPathPattern::class.java)
+            .satisfies( Consumer {
+                assertThat(it.expected).isEqualTo(jsonPath)
             })
     }
 }

@@ -14,4 +14,20 @@ internal class FaultResponseScopeTest {
         val response = faultScope.builder.build()
         assertThat(response.fault).isEqualTo(Fault.MALFORMED_RESPONSE_CHUNK)
     }
+
+    @Test
+    fun `proxy should apply proxy scope`() {
+        val responseScope = FaultResponseScope()
+
+        assertThat(responseScope.proxy.isInitialized()).isFalse
+
+        responseScope.apply {
+            proxy {
+                baseUrl = "https://test.example.com"
+            }
+        }
+
+        assertThat(responseScope.proxy.isInitialized()).isTrue
+        assertThat(responseScope.proxy.baseUrl).isEqualTo("https://test.example.com")
+    }
 }
