@@ -165,8 +165,6 @@ open class NamedPattern(
         junctionPattern = null
         return this
     }
-
-
 }
 
 class DateTimeNamedPattern(

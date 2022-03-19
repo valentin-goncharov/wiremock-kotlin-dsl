@@ -26,17 +26,17 @@ import dsl.wiremock.WireMockDSL
 class MetadataScope {
     private lateinit var builder: Metadata.Builder
 
-    fun apply(fn: MetadataEntry.() -> Unit) {
+    internal fun apply(fn: MetadataEntry.() -> Unit) {
         val entry = MetadataEntry(Metadata.metadata())
         entry.apply(fn)
         builder = entry.metadataBuilder
     }
 
-    fun build(): Metadata {
+    internal fun build(): Metadata {
         return builder.build()
     }
 
-    fun isInitialized(): Boolean {
+    internal fun isInitialized(): Boolean {
         return this::builder.isInitialized
     }
 }

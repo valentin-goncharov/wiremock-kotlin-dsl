@@ -31,18 +31,19 @@ class StubForTest {
 
             headers contain "X-Test-Equal" equalTo "test" or "X-Test-Equal" matches "test"
             headers contain "X-Test-Match" matches "t?est.*" and "X-Test-Match" doesNotMatch "testo.+"
-            headers contain "X-Test-Contains" contains "test" or ("X-Test-Contains" dateTime "2022-01-15 21:45:00" and
-                    "X-Test-Contains" equalTo "sdsd")
+            headers contain "X-Test-Contains" contains "test" or (
+                    "X-Test-Contains" dateTime "2022-01-15T21:45:00" and "X-Test-Contains" equalTo "sdsd"
+                    )
             headers contain "X-Test-Not-Match" doesNotMatch "[0-9]+"
-            headers contain "X-Test-Date" dateTime "2022-01-15" actualFormat "yyyy-MM-dd"
-            headers contain "X-Test-Date-After" after "2022-01-15 21:45:00" truncateActual "last day of month"
-            headers contain "X-Test-Date-Before" before "2022-01-15 21:45:00"
+            headers contain "X-Test-Date" dateTime "2022-01-15T00:00:00" actualFormat "yyyy-MM-dd"
+            headers contain "X-Test-Date-After" after "2022-01-15T21:45:00" truncateActual "last day of month"
+            headers contain "X-Test-Date-Before" before "2022-01-15T21:45:00"
             headers doNotContain "X-Not"
 
             cookies contain "Session"
             cookies doNotContain "Version"
 
-            queryParameters contain "startDate" after "2022-01-16 11:45:00" actualFormat "yyyy-MM-dd HH:mm:ss"
+            queryParameters contain "startDate" after "2022-01-16T11:45:00" actualFormat "yyyy-MM-dd HH:mm:ss"
             queryParameters doNotContain "endDate"
 
             body json """
@@ -82,25 +83,12 @@ class StubForTest {
                 body json """{"key":"value"}"""
             }
 
-            multipart with {
-                name = "add"
-                type = "ANY"
-                headers contain "trace"
-                body json """{"key":"value"}"""
-            }
-
         } returns {
             status = 200
             headers contain "ETag" equalTo "56d-9989200-1132c580"
 
             proxy {
                 baseUrl = "https://test.com"
-                prefixToRemove = "/test/prefix"
-                headers contain "X-Test" equalTo "Content"
-            }
-
-            proxy with {
-                baseUrl = "https://test.example.com"
                 prefixToRemove = "/test/prefix"
                 headers contain "X-Test" equalTo "Content"
             }

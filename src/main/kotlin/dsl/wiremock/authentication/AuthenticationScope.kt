@@ -39,15 +39,15 @@ class AuthenticationScope {
         return this
     }
 
-    fun getUsername(): String {
+    internal fun getUsername(): String {
         return _username
     }
 
-    fun getPassword(): String {
+    internal fun getPassword(): String {
         return _password
     }
 
-    fun isInitialized(): Boolean {
+    internal fun isInitialized(): Boolean {
         return this::_username.isInitialized && this::_password.isInitialized
     }
 
