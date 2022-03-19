@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.io.EOFException
 import java.io.IOException
 import kotlin.system.measureTimeMillis
 import kotlin.time.*
@@ -19,7 +20,7 @@ import kotlin.time.*
 class StubFailResponseTest: BaseStubTest() {
 
     @Test
-    fun `request body should be equal to string`() {
+    fun `request should fail with empty response after 1 second delay `() {
         get {
             url equalTo "/simple"
         } fails {
@@ -33,6 +34,7 @@ class StubFailResponseTest: BaseStubTest() {
                     client.get<HttpStatement>("http://localhost:9090/simple").execute()
                 }
             }.isInstanceOf(IOException::class.java)
+                .hasRootCauseInstanceOf(EOFException::class.java)
         }
         assertThat(elapsed).isGreaterThanOrEqualTo(1000)
     }
