@@ -1,6 +1,5 @@
 package dsl.wiremock.stubs
 
-import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import io.ktor.client.request.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.Test
 internal class UrlMatchingTest: BaseStubTest() {
 
     @Test
-    fun `url should match to any url string`(wmRuntimeInfo: WireMockRuntimeInfo) {
+    fun `url should match to any url string`() {
         any {
             url equalTo "any"
         } returns {
@@ -27,7 +26,7 @@ internal class UrlMatchingTest: BaseStubTest() {
     }
 
     @Test
-    fun `url should be equal to path and query params`(wmRuntimeInfo: WireMockRuntimeInfo) {
+    fun `url should be equal to path and query params`() {
         any {
             url equalTo "/path?query=param"
         } returns {
@@ -41,7 +40,7 @@ internal class UrlMatchingTest: BaseStubTest() {
     }
 
     @Test
-    fun `url should match path pattern and query params`(wmRuntimeInfo: WireMockRuntimeInfo) {
+    fun `url should match path pattern and query params`() {
         any {
             url matches  "/path/.*\\?query=[0-9]+"
         } returns {
@@ -55,7 +54,7 @@ internal class UrlMatchingTest: BaseStubTest() {
     }
 
     @Test
-    fun `url path should be equal to path`(wmRuntimeInfo: WireMockRuntimeInfo) {
+    fun `url path should be equal to path`() {
         any {
             url pathEqualTo "/path/subpath"
         } returns {
@@ -72,7 +71,7 @@ internal class UrlMatchingTest: BaseStubTest() {
     }
 
     @Test
-    fun `url path should match path pattern`(wmRuntimeInfo: WireMockRuntimeInfo) {
+    fun `url path should match path pattern`() {
         any {
             url pathMatches "/path/a.*"
             priority = 1

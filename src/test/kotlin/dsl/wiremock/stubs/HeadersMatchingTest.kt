@@ -1,6 +1,5 @@
 package dsl.wiremock.stubs
 
-import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -172,7 +171,7 @@ internal class HeadersMatchingTest: BaseStubTest() {
     } 
 
     @Test
-    fun `request should contains header that contains string`(wireMockRuntimeInfo: WireMockRuntimeInfo) {
+    fun `request should contains header that contains string`() {
         delete {
             headers contain "X-Test-Contain" contains "marker"
         } returns {
